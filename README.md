@@ -2,7 +2,7 @@
  Miniscript integration suite with Unity3D.
  
  Supported features:
- 	a) Define/Instance/Modify/Edit Type(s) via Intrinsic calls
+ 	a) Define/Instance/Modify/Edit Type(s) via Intrinsic calls<br>
  	b) Management of Type instances in a database-like manner (xml backed DataSet in file format)
     		i) each Type can be added/removed from memory as desired at runtime
 		ii) each Type can be edited while it is in memory, adding or removing fields as desired
