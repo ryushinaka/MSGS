@@ -11,10 +11,10 @@
 	  i) Support with Prefabs for Common Controls (button, image, listview, etc)<br>
 	  ii) UI can be prefabed in Unity as you would normally, or you can use the provided script to "export" the hierarchy to file which can be loaded/unloaded at runtime as desired.<br>
      d) MiniScript script extra features:<br>
-          i) Can prepend/postpend script source from/with any other script source that has been loaded into memory<br>
+          i) Can prepend/postpend script source from/with any other script source that has been loaded into memory, changeable when script is not being executed.<br>
 	  ii) Can schedule scripts to run on dedicated threads, if desired. (partially implemented)  This avoids Unity "main thread" limitations, where applicable<br>
    	  iii) Per Script, can register callbacks for state of the script execution (partially to not imlemented)<br>
-	  
+	     
  Unsupported features:<br>
      a) Networking:  its on the list of things I would like to see added, but its going to be a while.<br>
      b) Data-binding of some kind for the UI controls.  Unimplemented at this time.<br>
