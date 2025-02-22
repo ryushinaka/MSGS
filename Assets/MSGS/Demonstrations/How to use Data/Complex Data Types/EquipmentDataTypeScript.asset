@@ -1,0 +1,227 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: abfd13be4ce45a94a851143da6478e49, type: 3}
+  m_Name: EquipmentDataTypeScript
+  m_EditorClassIdentifier: 
+  serializationData:
+    SerializedFormat: 2
+    SerializedBytes: 
+    ReferencedUnityObjects: []
+    SerializedBytesString: 
+    Prefab: {fileID: 0}
+    PrefabModificationsReferencedUnityObjects: []
+    PrefabModifications: []
+    SerializationNodes: []
+  Label: 
+  ScriptableObjectType: 1
+  PrependedScripts: []
+  Archive: 0
+  Audio: 0
+  Data: 1
+  Database: 0
+  Host: 0
+  Json: 0
+  MUUI: 0
+  Network: 0
+  Schedule: 0
+  Time: 0
+  XML: 0
+  Zip: 0
+  ScriptContent: '//In this script we will declare the Equipment data type and related
+    values
+
+
+    globals["data"].CreateDataStore "Equipment"
+
+    globals["data"].AttributeAdd
+    "Equipment", "Name", "string"
+
+    globals["data"].AttributeAdd "Equipment",
+    "Weight", 15
+
+    globals["data"].AttributeAdd "Equipment", "EquipmentType",
+    "string"
+
+    globals["data"].AttributeAdd "Equipment", "Damage", 0
+
+    globals["data"].AttributeAdd
+    "Equipment", "Armor", 0
+
+    globals["data"].AttributeAdd "Equipment", "Description",
+    "string"
+
+
+    //Now that the Type ''Equipment'' has been declared, we will instance
+    a few items for RNG
+
+
+    //First we will create an instance of a Sword
+
+    vm
+    = globals["data"].CreateInstance "Equipment"
+
+    vm["Name"] = "Sword"
+
+    vm["Weight"]
+    = 20
+
+    vm["EquipmentType"] = "Weapon 1H"
+
+    vm["Damage"] = 1d6
+
+    vm["Armor"]
+    = 0
+
+    vm["Description"] = "It''s a really short sword, so small you might
+    want to call it a dagger instead."
+
+
+    //call the Intrinsic method to have
+    this objects data updated
+
+    globals["data"].UpdateInstance "Equipment", vm
+
+
+    //Secondly
+    we will create an instance of a Shield
+
+    vm = globals["data"].CreateInstance
+    "Equipment"
+
+    vm["Name"] = "Shield"
+
+    vm["Weight"] = 5
+
+    vm["EquipmentType"]
+    = "Shield"
+
+    vm["Damage"] = 0
+
+    vm["Armor"] = 1
+
+    vm["Description"]
+    = "It''s so small and round you are not sure what protection it provides."
+
+
+    //call
+    the Intrinsic method to have this objects data updated
+
+    globals["data"].UpdateInstance
+    "Equipment", vm
+
+
+    //Thirdly we will create an instance of a Helmet
+
+    vm
+    = globals["data"].CreateInstance "Equipment"
+
+    vm["Name"] = "Helmet"
+
+    vm["Weight"]
+    = 10
+
+    vm["EquipmentType"] = "Armor"
+
+    vm["Damage"] = 0
+
+    vm["Armor"]
+    = 4
+
+    vm["Description"] = "It protects the cranium from blunt forces."
+
+
+    //call
+    the Intrinsic method to have this objects data updated
+
+    globals["data"].UpdateInstance
+    "Equipment", vm
+
+
+    //Fourth we will create an instance of a chestplate
+
+    vm
+    = globals["data"].CreateInstance "Equipment"
+
+    vm["Name"] = "Chestplate"
+
+    vm["Weight"]
+    = 10
+
+    vm["EquipmentType"] = "Armor"
+
+    vm["Damage"] = 0
+
+    vm["Armor"]
+    = 8
+
+    vm["Description"] = "It protects the torso from blunt forces."
+
+
+    //call
+    the Intrinsic method to have this objects data updated
+
+    globals["data"].UpdateInstance
+    "Equipment", vm
+
+
+    //Fifth we will create an instance of a leggings
+
+    vm
+    = globals["data"].CreateInstance "Equipment"
+
+    vm["Name"] = "Legplate"
+
+    vm["Weight"]
+    = 10
+
+    vm["EquipmentType"] = "Armor"
+
+    vm["Damage"] = 0
+
+    vm["Armor"]
+    = 8
+
+    vm["Description"] = "It protects the legs from blunt forces."
+
+
+    //call
+    the Intrinsic method to have this objects data updated
+
+    globals["data"].UpdateInstance
+    "Equipment", vm
+
+
+    //Sixth we will create an instance of a Backpack
+
+    vm
+    = globals["data"].CreateInstance "Equipment"
+
+    vm["Name"] = "Backpack"
+
+    vm["Weight"]
+    = 10
+
+    vm["EquipmentType"] = "Container"
+
+    vm["Damage"] = 0
+
+    vm["Armor"]
+    = 0
+
+    vm["Description"] = "It holds within itself other items."
+
+
+    //call
+    the Intrinsic method to have this objects data updated
+
+    globals["data"].UpdateInstance
+    "Equipment", vm'

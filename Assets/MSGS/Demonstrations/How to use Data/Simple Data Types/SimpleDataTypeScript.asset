@@ -1,0 +1,103 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: abfd13be4ce45a94a851143da6478e49, type: 3}
+  m_Name: SimpleDataTypeScript
+  m_EditorClassIdentifier: 
+  serializationData:
+    SerializedFormat: 2
+    SerializedBytes: 
+    ReferencedUnityObjects: []
+    SerializedBytesString: 
+    Prefab: {fileID: 0}
+    PrefabModificationsReferencedUnityObjects: []
+    PrefabModifications: []
+    SerializationNodes: []
+  Label: SimpleDataTypeExample
+  ScriptableObjectType: 1
+  Archive: 0
+  Data: 1
+  Database: 0
+  Host: 1
+  Json: 0
+  MUUI: 0
+  Network: 0
+  Schedule: 0
+  Time: 0
+  XML: 0
+  Zip: 0
+  ScriptContent: '//this needs to be changed so that is shows just a simple character
+    sheet from like D&D or something
+
+
+    globals["data"].CreateDataStore "NPCs"
+
+    globals["data"].CreateDataStore
+    "Characters"
+
+
+    globals["data"].AttributeAdd "NPCs", "attributeName", "string"
+
+    globals["data"].AttributeAdd
+    "NPCs", "attributeAge", 0
+
+
+    globals["data"].AttributeAdd "Characters", "attributeName",
+    "string"
+
+    globals["data"].AttributeAdd "Characters", "attributeAge", 0
+
+
+    globals["data"].AttributeRemove
+    "NPCs", "attributeAge"
+
+
+    has = globals["data"].HasAttribute("Characters",
+    "attributeName")
+
+    globals["host"].LogInfo ("Do Characters have attributeName? 
+    " + has)
+
+
+    lst = globals["data"].GetTypeStoreList
+
+    globals["host"].LogInfo
+    ("Quantity of data types in memory: " + lst.len)
+
+
+    globals["data"].DataStoreUnload
+    "NPCs", true
+
+
+    globals["data"].DataStoreLoad "NPCs"
+
+
+    myChar = globals["data"].CreateInstance("Characters")
+
+
+    myParty
+    = globals["data"].CreateInstances("Characters" , 10)
+
+
+    quantity = globals["data"].InstanceQuantity("Characters")
+
+
+    //globals["data"].SaveState
+    "ABCSaveState"
+
+
+    //globals["data"].LoadState "ABCSaveState"
+
+
+    //globals["data"].CreateAutosave
+
+
+'

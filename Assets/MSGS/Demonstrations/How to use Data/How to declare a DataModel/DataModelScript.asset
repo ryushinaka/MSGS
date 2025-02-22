@@ -1,0 +1,139 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: abfd13be4ce45a94a851143da6478e49, type: 3}
+  m_Name: DataModelScript
+  m_EditorClassIdentifier: 
+  serializationData:
+    SerializedFormat: 2
+    SerializedBytes: 
+    ReferencedUnityObjects: []
+    SerializedBytesString: 
+    Prefab: {fileID: 0}
+    PrefabModificationsReferencedUnityObjects: []
+    PrefabModifications: []
+    SerializationNodes: []
+  Label: DataModelScript
+  ScriptableObjectType: 1
+  PrependedScripts: []
+  Archive: 0
+  Data: 1
+  Database: 0
+  Host: 1
+  Json: 0
+  MUUI: 0
+  Network: 0
+  Schedule: 0
+  Time: 0
+  XML: 0
+  Zip: 0
+  ScriptContent: '//In this example, you will see that you can declare all of your
+    Types in one single script
+
+    //if this is how you would prefer to setup your
+    data
+
+
+    //it is also possible to declare all of the instances of those Types
+    within this Script as well
+
+    //though for maintainability it is recommended
+    to divide Types into individual Scripts then
+
+
+    //smallest piece of data this
+    model is concened with is a Region on a planet
+
+    //or similar stellar body
+    within a solar system
+
+
+    globals["data"].DataStoreCreate "Region"
+
+    globals["data"].AttributeAdd
+    "Region" "Name" "string"
+
+    globals["data"].AttributeAdd "Region" "ownerPlanet"
+    "string"
+
+    globals["data"].AttributeAdd "Region" "size" 0
+
+
+    //Planets
+    contain regions and are a part of Solar Systems
+
+    globals["data"].DataStoreCreate
+    "Planet"
+
+    globals["data"].AttributeAdd "Planet" "Name" "string"
+
+    globals["data"].AttributeAdd
+    "Planet" "ownerSolarSystem", "string"
+
+
+    //Solar Systems contain Planets,
+    but are also part of Clusters
+
+    globals["data"].DataStoreCreate "SolarSystem"
+
+    globals["data"].AttributeAdd
+    "SolarSystem" "Name" "string"
+
+    globals["data"].AttributeAdd "SolarSystem"
+    "ownerCluster" "string"
+
+
+    //Star Clusters contain 1 or more Solar Systems
+
+    globals["data"].DataStoreCreate
+    "StarCluster"
+
+    globals["data"].AttributeAdd "StarCluster" "Name" "string"
+
+    globals["data"].AttributeAdd
+    "StarCluster" "ownerGalaxy" "string"
+
+
+    //Galaxies contain 1 or more Star
+    Clusters
+
+    globals["data"].DataStoreCreate "Galaxy"
+
+    globals["data"].AttributeAdd
+    "Galaxy" "Name" "string"
+
+    globals["data"].AttributeAdd "Galaxy" "ownerGalaxy"
+    "string"
+
+
+    //so now we have a primitive data model for a Galaxy, in some
+    theoretical abstract
+
+    //In this example, I will reference Stellaris (PC video
+    game) for a visual aid to the abstraction
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+'

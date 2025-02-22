@@ -1,0 +1,4 @@
+
+downloaded to the Downloads folder as a zip file
+contains all the algorithms AND data structures you could rationally want in C#
+https://github.com/TheAlgorithms/C-Sharp

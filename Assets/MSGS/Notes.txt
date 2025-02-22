@@ -1,0 +1,21 @@
+
+It might be important to do some testing about string handling by MSGS.
+String Interning in .NET can provide significant performance improvements in edge cases.
+
+https://learn.microsoft.com/en-us/dotnet/api/system.string.intern?view=net-8.0
+https://stackoverflow.com/questions/8054471/string-interning-in-net-framework-what-are-the-benefits-and-when-to-use-inter
+
+
+//Keyboard raw input for Windows .NET into unity
+https://github.com/elringus/unity-raw-input
+https://learn.microsoft.com/en-us/windows/win32/inputdev/virtual-key-codes
+
+//locales related to the keyboard type being used for input
+https://stackoverflow.com/questions/45609996/programmatically-listing-all-supported-locales-in-windows-10
+https://stackoverflow.com/questions/2260586/how-to-get-list-of-locales-in-net
+
+//Advanced Asset creation in Unity
+https://www.youtube.com/watch?v=Uda00hM4tHQ
+
+//How to not release a broken build in Unity
+https://www.youtube.com/watch?v=0JzrO-Y6A_k

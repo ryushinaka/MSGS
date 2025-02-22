@@ -1,0 +1,98 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: abfd13be4ce45a94a851143da6478e49, type: 3}
+  m_Name: CharacterDataTypeScript
+  m_EditorClassIdentifier: 
+  serializationData:
+    SerializedFormat: 2
+    SerializedBytes: 
+    ReferencedUnityObjects: []
+    SerializedBytesString: 
+    Prefab: {fileID: 0}
+    PrefabModificationsReferencedUnityObjects: []
+    PrefabModifications: []
+    SerializationNodes: []
+  Label: 
+  ScriptableObjectType: 1
+  PrependedScripts:
+  - {fileID: 11400000, guid: b5eb961b097b1b64f8c33dc890343384, type: 2}
+  - {fileID: 11400000, guid: ee8325fa18d339e4d997564dc5768560, type: 2}
+  Archive: 0
+  Data: 1
+  Database: 0
+  Host: 1
+  Json: 0
+  MUUI: 0
+  Network: 0
+  Schedule: 0
+  Time: 0
+  XML: 0
+  Zip: 0
+  ScriptContent: '//This shows how to create an object that is composed of multiple
+    other data types
+
+
+
+    //declare the name of the Type to be stored
+
+    globals["data"].CreateDataStore
+    "Characters"
+
+
+    //add attributes to the Type
+
+    globals["data"].AttributeAdd
+    "Characters", "Name", "string"
+
+    globals["data"].AttributeAdd "Characters",
+    "Age", 0
+
+    globals["data"].AttributeAdd "Characters", "Race", "string"
+
+    globals["data"].AttributeAdd
+    "Characters", "Str", 0
+
+    globals["data"].AttributeAdd "Characters", "Int",
+    0
+
+    globals["data"].AttributeAdd "Characters", "Wis", 0
+
+    globals["data"].AttributeAdd
+    "Characters", "Dex", 0
+
+    globals["data"].AttributeAdd "Characters", "Con",
+    0
+
+    globals["data"].AttributeAdd "Characters", "Luk", 0
+
+
+    //Character
+    sheets come with Inventory as well
+
+    //the declaration for that is handled
+    in the InventoryDataTypeScript contents
+
+    //which is in the Prepended Scripts
+    List at the top here.
+
+
+    //Depending on the complexity of your data, the specific
+    order of the Prepended Scripts
+
+    //in the List above can be significant and
+    may affect compiling the scripts.
+
+
+    //Now we move on to generating a random
+    Character by writing out a script function
+
+'
