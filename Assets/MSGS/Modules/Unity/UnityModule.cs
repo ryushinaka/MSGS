@@ -7,6 +7,7 @@ namespace MiniScript.MSGS.Unity
 {
     public static class UnityModule
     {
+        internal static bool debug;
         static bool hasInitialized;
         static ValMap intrinsics;
         public static ValMap Get()
@@ -40,13 +41,15 @@ namespace MiniScript.MSGS.Unity
             };
 
             //Add the UnityEngine.Application wrapper to the ValMap
-            intrinsics.map.Add(new ValString("App"), UnityEngineApplicationWrapper.Get());            
-            //add the UnityEngine.Time wrapper to the ValMap
-            intrinsics.map.Add(new ValString("Time"), UnityEngineTimeWrapper.Get());            
+            intrinsics.map.Add(new ValString("App"), UnityEngineApplicationWrapper.Get());
             //add the UnityEngine.PlayerPrefs wrapper to the ValMap
             intrinsics.map.Add(new ValString("PlayerPrefs"), UnityEnginePlayerPrefsWrapper.Get());
             //add the UnityEngine.Random wrapper
             intrinsics.map.Add(new ValString("Random"), UnityEngineRandomWrapper.Get());
+            //add the UnityEngine.Time wrapper to the ValMap
+            intrinsics.map.Add(new ValString("Time"), UnityEngineTimeWrapper.Get());
+            //add the UnityEngine.Screen wrapper to the ValMap
+            intrinsics.map.Add(new ValString("Screen"), UnityEngineScreenWrapper.Get());
         }
     }
 }

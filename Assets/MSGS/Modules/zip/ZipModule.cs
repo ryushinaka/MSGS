@@ -7,6 +7,7 @@ namespace MiniScript.MSGS.Zip
 {
     public static class ZipModule
     {
+        internal static bool debug;
         static bool hasInitialized;
         static ValMap zipIntrinsics;
         static Dictionary<string, ZipFile> files;

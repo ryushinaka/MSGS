@@ -12,7 +12,7 @@ namespace MiniScript.MSGS.MUUI.Extensions
 {
     public static class InputFieldExtensions
     {
-        public static ValMap ToValMap(this MiniScript.MSGS.MUUI.TwoDimensional.InputField text)
+        public static ValMap ToValMap(this MiniScript.MSGS.MUUI.TwoDimensional.MUUIInputField text)
         {
             ValMap rst = new ValMap();
             rst.map.Add(new ValString("enabled"), ValNumber.Truth(text.enabled));
@@ -42,7 +42,7 @@ namespace MiniScript.MSGS.MUUI.Extensions
             return rst;
         }
 
-        public static bool UpdateInputField(this MiniScript.MSGS.MUUI.TwoDimensional.InputField text, Value a, Value b)
+        public static bool UpdateInputField(this MiniScript.MSGS.MUUI.TwoDimensional.MUUIInputField text, Value a, Value b)
         {
             if (a is ValString)
             {
@@ -448,7 +448,7 @@ namespace MiniScript.MSGS.MUUI.Extensions
             }
         }
 
-        public static void SetupInputField(this MiniScript.MSGS.MUUI.TwoDimensional.InputField input, ref DataRow row)
+        public static void SetupInputField(this MiniScript.MSGS.MUUI.TwoDimensional.MUUIInputField input, ref DataRow row)
         {
 
         }

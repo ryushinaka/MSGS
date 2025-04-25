@@ -12,7 +12,7 @@ namespace MiniScript.MSGS.MUUI.Extensions
 {
     public static class DropDownExtensions 
     {
-        public static ValMap ToValMap(this DropDown drop)
+        public static ValMap ToValMap(this MUUIDropDown drop)
         {
             ValMap rst = new ValMap();
             rst.map.Add(new ValString("InstanceID"), new ValNumber(drop.gameObject.GetInstanceID()));
@@ -53,7 +53,7 @@ namespace MiniScript.MSGS.MUUI.Extensions
             return rst;
         }
 
-        public static bool UpdateDropDown(this DropDown drop, Value a, Value b)
+        public static bool UpdateDropDown(this MUUIDropDown drop, Value a, Value b)
         {
             if (a is ValString)
             {
@@ -702,7 +702,7 @@ namespace MiniScript.MSGS.MUUI.Extensions
             }
         }
 
-        public static void SetupDropDown(this DropDown drop, ref DataRow row)
+        public static void SetupDropDown(this MUUIDropDown drop, ref DataRow row)
         {
             //drop.defaultText.SetText((string)row["TextValue"]);
             drop.defaultText.fontSize = (int)row["FontSize"];

@@ -60,9 +60,6 @@ namespace MiniScript.MSGS.Unity.DevConsole
         public ConsoleCommandSO()
         {
             OutputEvent = new UnityEngine.Events.UnityEvent<string>();
-#if UNITY_EDITOR
-            debug = true;
-#endif
 
             err_msgs = new List<string>();
             std_output = new List<string>();
@@ -72,20 +69,28 @@ namespace MiniScript.MSGS.Unity.DevConsole
             interpreter.standardOutput = new TextOutputMethod(StandardOutput);
         }
 
+        public void AddGlobal(string label, Value v)
+        {
+            interpreter.SetGlobalValue(label, v);
+        }
+
         void ImplicitOutput(string msg)
         {
             if (debug) { Debug.Log("ConsoleCommandSO[Implicit]: " + msg); }
-            std_output.Add("Imp: " + msg); hasStdOutput = true;
+            OutputEvent.Invoke(msg);
+            //std_output.Add("Imp: " + msg); hasStdOutput = true;
         }
         void ErrorOutput(string msg)
         {
             if (debug) { Debug.Log("ConsoleCommandSO[Error]: " + msg); compilebroke = true; }
-            err_msgs.Add(DateTime.Now.ToString() + " " + msg); hasErrors = true;
+            OutputEvent.Invoke(msg);
+            //err_msgs.Add(DateTime.Now.ToString() + " " + msg); hasErrors = true;
         }
         void StandardOutput(string msg)
         {
             if (debug) { Debug.Log("ConsoleCommandSO[StdOut]: " + msg); }
-            std_output.Add(DateTime.Now.ToString() + " " + msg); hasStdOutput = true;
+            OutputEvent.Invoke(msg);
+            //std_output.Add(DateTime.Now.ToString() + " " + msg); hasStdOutput = true;
         }
 
         public UnityEngine.Events.UnityEvent<string> OutputEvent;
@@ -100,11 +105,16 @@ namespace MiniScript.MSGS.Unity.DevConsole
                 interpreter.Reset(scriptSource); interpreter.Compile();
                 #region assign objects for the globals reference/values to script code
                 interpreter.SetGlobalValue("Audio", ScriptModuleConfiguration.Audio);
+                
                 interpreter.SetGlobalValue("Data", ScriptModuleConfiguration.Data);
+                //if (debug) { Data.DataIntrinsics.debug = true; }
                 interpreter.SetGlobalValue("Database", ScriptModuleConfiguration.Database);
+                //if (debug) { Database.DatabaseModule.debug = true; }
                 interpreter.SetGlobalValue("Host", ScriptModuleConfiguration.Host);
+                //if (debug) { Host.HostModule.debug = true; }
                 interpreter.SetGlobalValue("Json", ScriptModuleConfiguration.Json);
                 interpreter.SetGlobalValue("UI", ScriptModuleConfiguration.UI);
+                //if(debug) { MUUI.MUUIIntrinsics.debug = true; }
                 interpreter.SetGlobalValue("Network", ScriptModuleConfiguration.Network);
                 interpreter.SetGlobalValue("Schedule", ScriptModuleConfiguration.Schedule);
                 interpreter.SetGlobalValue("Time", ScriptModuleConfiguration.Time);
@@ -140,11 +150,11 @@ namespace MiniScript.MSGS.Unity.DevConsole
                     }
                     catch (OperationCanceledException)
                     {
-                        if (debug) { Debug.LogWarning($"ConsoleCommandSO[Warning]: Script[{this.name}] was canceled."); }
+                        if (debug) { Debug.LogWarning($"ConsoleCommandSO[Warning]: Script was canceled."); }
                     }
                     catch (Exception ex)
                     {
-                        if (debug) { Debug.LogError($"ConsoleCommandSO[Error]: Script[{this.name}] encountered an Exception: {ex.Message}"); }
+                        if (debug) { Debug.LogError($"ConsoleCommandSO[Error]: Script encountered an Exception: {ex.Message}"); }
                     }
                 }
             }
@@ -164,7 +174,7 @@ namespace MiniScript.MSGS.Unity.DevConsole
                 else { await Task.Run(() => { interpreter.Step(); stepCounter++; }); }
             }
 
-            if(debug) { Debug.Log("ConsoleCommandSO[Info]: interpreter finished."); }
+            //if(debug) { Debug.Log("ConsoleCommandSO[Info]: interpreter finished."); }
         }
     }
 }

@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
+using MiniScript.MSGS.Data;
 
 namespace MiniScript.MSGS.Unity
 {
@@ -96,6 +97,11 @@ namespace MiniScript.MSGS.Unity
             }
         }
 
+        public void AddGlobal(string label, Value v)
+        {
+            interpreter.SetGlobalValue(label, v);
+        }
+
         public OneShotScript()
         {
             err_msgs = new List<string>();
@@ -123,6 +129,23 @@ namespace MiniScript.MSGS.Unity
             std_output.Add(DateTime.Now.ToString() + " " + msg); hasStdOutput = true;
         }
 
+        public void Compile()
+        {
+            if (!isRunning)
+            {
+                err_msgs.Clear(); std_output.Clear();
+                interpreter.errorOutput = new TextOutputMethod(ErrorOutput);
+                interpreter.implicitOutput = new TextOutputMethod(ImplicitOutput);
+                interpreter.standardOutput = new TextOutputMethod(StandardOutput);
+
+                //special sauce for all the Intrinsics is within CustomHostData
+                interpreter.hostData = new CustomHostData();
+
+                interpreter.Reset(scriptSource); interpreter.Compile();
+                ScriptModuleConfiguration.AssignGlobals(ref interpreter);
+            }
+        }
+
         public void Stop()
         {
             cancelRequested = true;
@@ -130,63 +153,121 @@ namespace MiniScript.MSGS.Unity
 
         public void Run()
         {
-            if(!isRunning)
+            if (!isRunning)
             {
                 isRunning = true;
                 err_msgs.Clear(); std_output.Clear();
 
                 //special sauce for all the Intrinsics is within CustomHostData
-                //interpreter.hostData = new CustomHostData();
-
-                //interpreter.SetGlobalValue("observed", maps.ToValMap()); //the magic of extensions
+                interpreter.hostData = new CustomHostData();
 
                 interpreter.Reset(scriptSource); interpreter.Compile();
                 #region assign objects for the globals reference/values to script code
                 interpreter.SetGlobalValue("Audio", ScriptModuleConfiguration.Audio);
+
                 interpreter.SetGlobalValue("Data", ScriptModuleConfiguration.Data);
+                if (debug) { DataIntrinsics.debug = true; }
                 interpreter.SetGlobalValue("Database", ScriptModuleConfiguration.Database);
+                if (debug) { Database.DatabaseModule.debug = true; }
                 interpreter.SetGlobalValue("Host", ScriptModuleConfiguration.Host);
+                if (debug) { Host.HostModule.debug = true; }
                 interpreter.SetGlobalValue("Json", ScriptModuleConfiguration.Json);
+
                 interpreter.SetGlobalValue("UI", ScriptModuleConfiguration.UI);
+                if (debug) { MUUI.MUUIIntrinsics.debug = true; }
                 interpreter.SetGlobalValue("Network", ScriptModuleConfiguration.Network);
+                if (debug) { Network.NetworkModule.debug = true; }
                 interpreter.SetGlobalValue("Schedule", ScriptModuleConfiguration.Schedule);
+
                 interpreter.SetGlobalValue("Time", ScriptModuleConfiguration.Time);
+                if (debug) { Time.TimeKeeper.debug = true; }
                 interpreter.SetGlobalValue("Xml", ScriptModuleConfiguration.Xml);
+
                 interpreter.SetGlobalValue("Zip", ScriptModuleConfiguration.Zip);
+                if (debug) { Zip.ZipModule.debug = true; }
                 interpreter.SetGlobalValue("Unity", ScriptModuleConfiguration.Unity);
+                if (debug) { Unity.UnityModule.debug = true; }
                 #endregion
 
                 if (!compilebroke)
                 {
                     try
                     {
-                        if (debug) { Debug.Log($"OneShotScript[Info]: Script[{this.name}] was started at {System.DateTime.Now.Millisecond }"); }
+                        if (debug) { Debug.Log($"OneShotScript[Info]: Script was started at {System.DateTime.Now.Millisecond }"); }
 
                         startedWhen = DateTime.Now;
-                        try {
+                        try
+                        {
                             Action act = async () => { await RunScript(); };
                             act.Invoke();
+
+                            isRunning = false;
+                            scriptSource = string.Empty;
+                            ScriptableObjectCache.soOneShots.Enqueue(this);
                         }
-                        catch(Exception ex)
+                        catch (Exception ex)
                         {
                             Debug.Log("OneShotScript[Exception]: Script threw Exception while executing. " + ex.Message);
                         }
-                        
+
                         finishedWhen = DateTime.Now;
 
-                        if (debug) { Debug.Log($"OneShotScript[Info]: Script[{this.name}] was completed at {System.DateTime.Now.Millisecond }"); }
+                        if (debug) { Debug.Log($"OneShotScript[Info]: Script was completed at {System.DateTime.Now.Millisecond }"); }
                     }
                     catch (OperationCanceledException)
                     {
-                        if (debug) { Debug.LogWarning($"OneShotScript[Warning]: Script[{this.name}] was canceled."); }
+                        if (debug) { Debug.LogWarning($"OneShotScript[Warning]: Script was canceled."); }
                     }
                     catch (Exception ex)
                     {
-                        if (debug) { Debug.LogError($"OneShotScript[Error]: Script[{this.name}] encountered an Exception: {ex.Message}"); }
+                        if (debug) { Debug.LogError($"OneShotScript[Error]: Script encountered an Exception: {ex.Message}"); }
                     }
                 }
             }
-           
+        }
+
+        public void RunSync()
+        {
+            interpreter.RunUntilDone();
+
+            if (!isRunning)
+            {
+                isRunning = true;
+
+                if (!compilebroke)
+                {
+                    try
+                    {
+                        if (debug) { Debug.Log($"OneShotScript[Info]: Script was started at {System.DateTime.Now.Millisecond }"); }
+
+                        startedWhen = DateTime.Now;
+                        try
+                        {
+                            isRunning = false;
+                            scriptSource = string.Empty;
+                            //ScriptableObjectCache.soOneShots.Enqueue(this);
+                        }
+                        catch (Exception ex)
+                        {
+                            Debug.Log("OneShotScript[Exception]: Script threw Exception while executing. " + ex.Message);
+                        }
+
+                        finishedWhen = DateTime.Now;
+
+                        if (debug) { Debug.Log($"OneShotScript[Info]: Script was completed at {System.DateTime.Now.Millisecond }"); }
+                    }
+                    catch (OperationCanceledException)
+                    {
+                        if (debug) { Debug.LogWarning($"OneShotScript[Warning]: Script was canceled."); }
+                    }
+                    catch (Exception ex)
+                    {
+                        if (debug) { Debug.LogError($"OneShotScript[Error]: Script encountered an Exception: {ex.Message}"); }
+                    }
+                }
+
+                isRunning = false;
+            }
         }
 
         public void Run(object obj)
@@ -254,13 +335,16 @@ namespace MiniScript.MSGS.Unity
 
         async Task RunScript()
         {
-            while (!interpreter.done) {
-                if (cancelRequested) {
+            while (!interpreter.done)
+            {
+                if (cancelRequested)
+                {
                     if (debug) { Debug.LogWarning("OneShotScript[Info]: Cancellation requested before the script completed."); }
                     AutoRestart = false;
                     cancelRequested = false;
                     interpreter.Stop();
-                    return; }
+                    return;
+                }
                 else { await Task.Run(() => { interpreter.Step(); stepCounter++; }); }
             }
             if (AutoRestart) { interpreter.Restart(); stepCounter = 0; }

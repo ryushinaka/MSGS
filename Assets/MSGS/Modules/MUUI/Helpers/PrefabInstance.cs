@@ -6,6 +6,7 @@ using UnityEngine;
 using MiniScript;
 using Sirenix.OdinInspector;
 using MiniScript.MSGS.MUUI.Extensions;
+using MiniScript.MSGS.Unity;
 
 namespace MiniScript.MSGS.MUUI
 {
@@ -77,10 +78,7 @@ namespace MiniScript.MSGS.MUUI
 
         [Button]
         public void ResetRectTransforms()
-        {
-            //Debug.Log(set == null);
-            //Debug.Log(set.Tables.Contains("RectTransform"));
-
+        {   
             DataRow localref;
             for(int i = 0; i < set.Tables["RectTransform"].Rows.Count; i++)
             {

@@ -6,6 +6,7 @@ namespace MiniScript.MSGS.Network
 {
     public static class NetworkModule
     {
+        internal static bool debug;
         static bool hasInitialized;
         static ValMap mapNetwork;
 

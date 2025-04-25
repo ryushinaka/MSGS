@@ -29,7 +29,7 @@ namespace MiniScript.MSGS.PackageManager
         public string FilePath;
 
         [Tooltip("Enable if you want to see debug console output in the Unity Editor")]
-        public bool DebugOutput;
+        public bool DebugOutput = true;
 
         [Tooltip("The password to apply to the package file if you want to use one")]
         public string Password;
@@ -236,28 +236,27 @@ namespace MiniScript.MSGS.PackageManager
 
         static void ReadScriptEntry(ref Stream stream, ref ScriptFileChecker schecker, ref string entryname)
         {
-            StreamReader srdr = new StreamReader(stream);
-            ScriptExecutionContext2 script = new ScriptExecutionContext2();
-            script.ScriptSource = srdr.ReadToEnd();
+            StreamReader srdr = new StreamReader(stream);            
+            string script = srdr.ReadToEnd();
             //validate the script with the Parser
-            schecker.ValidateScript(script.ScriptSource);
+            schecker.ValidateScript(script);
 
             if (schecker.HasErrOutput)
             {
-                MiniScriptSingleton.LogError("Script '" + script.Label + "' has errors during compile. Error:: " + schecker.exception.Message);
+                MiniScriptSingleton.LogError("Script '" + entryname + "' has errors during compile. Error:: " + schecker.exception.Message);
                 OnCompletion.Invoke(false, string.Empty);
                 return;
             }
             if (schecker.Incomplete)
             {
-                MiniScriptSingleton.LogError("Script '" + script.Label + "' is incomplete and needs additional logic to be compiled.");
+                MiniScriptSingleton.LogError("Script '" + entryname + "' is incomplete and needs additional logic to be compiled.");
                 OnCompletion.Invoke(false, string.Empty);
                 return;
             }
 
             //if the script is complete and has no errors, add it to the current storage device
-            MiniScriptSingleton.Scripts.Add(entryname, script.ScriptSource);
-            OnCompletion.Invoke(true, "Script: " + script.Label);
+            MiniScriptSingleton.Scripts.Add(entryname, script);
+            OnCompletion.Invoke(true, "Script: " + script);
         }
 
         private static void CompressFolder(string path, ZipOutputStream zipStream, int folderOffset)
@@ -410,17 +409,17 @@ namespace MiniScript.MSGS.PackageManager
             //if (DebugOutput) { Debug.Log(v.ToString() + " " + s); }
 #endif
         }
+    }
 
-        internal struct DataStruct
-        {
-            public Stream stream;
-            public string name;
-            public IDataFileChecker dchecker;
-        }
-        internal struct ImageStruct
-        {
-            public Stream stream;
-            public string name;
-        }
+    internal struct DataStruct
+    {
+        public Stream stream;
+        public string name;
+        public IDataFileChecker dchecker;
+    }
+    internal struct ImageStruct
+    {
+        public Stream stream;
+        public string name;
     }
 }

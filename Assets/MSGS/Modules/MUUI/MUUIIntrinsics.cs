@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using MiniScript;
 using MiniScript.MSGS.MUUI.Extensions;
+using MiniScript.MSGS.Unity;
 
 namespace MiniScript.MSGS.MUUI
 {
@@ -13,7 +14,8 @@ namespace MiniScript.MSGS.MUUI
         public static GameObject RootGameObject;
 
         static ValMap uiIntrinsics;
-        
+        internal static bool debug;
+
         static void InitializeUnityPrefabs()
         {
             
@@ -78,7 +80,6 @@ namespace MiniScript.MSGS.MUUI
                 var x = GetGameObject(context.GetVar("name").ToString());
                 if (x != null)
                 {
-
                     var c = x.GetComponent<RectTransform>();
                     ValMap map = c.ToValMap();
                     map.map.Add(new ValString("X"), new ValNumber(c.anchoredPosition.x));

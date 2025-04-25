@@ -12,7 +12,7 @@ namespace MiniScript.MSGS.MUUI
 {
     public class MUUI_TestUnit : MonoBehaviour
     {
-        public Text text;
+        public MUUIText text;
 
         void Start()
         {

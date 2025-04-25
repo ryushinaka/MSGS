@@ -40,18 +40,18 @@ namespace MiniScript.MSGS.Testing
             #endregion
 
             //set the flag to test mode
-            DataIntrinsics.testMode = true;
+            DataIntrinsics.debug = true;
 
             //create Interpreter instance and assign global value
             Interpreter intp = new Interpreter(str.ToString());
             intp.errorOutput = ErrorOutput;
-            intp.standardOutput = StandardOutput;            
+            intp.standardOutput = StandardOutput;
             intp.Compile();
             intp.SetGlobalValue("data", DataIntrinsics.Get());
             intp.RunUntilDone();
 
 
-            DataIntrinsics.testMode = false;
+            DataIntrinsics.debug = false;
         }
 
         static void ErrorOutput(string msg) { Debug.Log("DataIntrinsicTest Error: " + msg); }

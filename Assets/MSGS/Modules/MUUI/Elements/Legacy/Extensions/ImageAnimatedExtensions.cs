@@ -8,7 +8,7 @@ namespace MiniScript.MSGS.MUUI.Extensions
 {
     public static class ImageAnimatedExtensions
     {
-        public static ValMap ToValMap(this ImageAnimated image)
+        public static ValMap ToValMap(this MUUIImageAnimated image)
         {
             ValMap map = new ValMap();
             map.map.Add(new ValString("enabled"), ValNumber.Truth(image.enabled));
@@ -24,7 +24,7 @@ namespace MiniScript.MSGS.MUUI.Extensions
             return map;
         }
 
-        public static bool UpdateImage(this ImageAnimated image, Value a, Value b)
+        public static bool UpdateImage(this MUUIImageAnimated image, Value a, Value b)
         {
             if (a is ValString)
             {
@@ -154,7 +154,7 @@ namespace MiniScript.MSGS.MUUI.Extensions
             }
         }
 
-        public static void SetupImageAnimated(this ImageAnimated image, ref DataRow row, ref DataRow[] sprites)
+        public static void SetupImageAnimated(this MUUIImageAnimated image, ref DataRow row, ref DataRow[] sprites)
         {
             image.image.color = new Color(
                 float.Parse(row["ColorR"].ToString()),

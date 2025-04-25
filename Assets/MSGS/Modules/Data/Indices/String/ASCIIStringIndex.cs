@@ -310,6 +310,7 @@ namespace MiniScript.MSGS.Data
 
     public class CharacterGraph
     {
+#pragma warning disable CS0414
         List<string> strings;
         uint depth = 0;
         Dictionary<char, CharacterElement> elements = new Dictionary<char, CharacterElement>();
@@ -394,6 +395,8 @@ namespace MiniScript.MSGS.Data
                 PopulateDictionaryRecursively(charList, index + 1, charDict);
             }
         }
+
+#pragma warning restore CS0414
     }
 
     public class CharacterElement

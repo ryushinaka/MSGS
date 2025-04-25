@@ -82,6 +82,9 @@ namespace MiniScript.MSGS
         public string Name;
         public string Comment;
         public Type variableType;
+        public object urange, lrange;
+        public bool rangeinclusive;
+        public System.Text.RegularExpressions.Regex regex;
     }
 }
 

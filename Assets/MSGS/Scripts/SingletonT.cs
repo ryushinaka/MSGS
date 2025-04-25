@@ -42,8 +42,10 @@ public class Singleton<T> : MonoBehaviour where T : MonoBehaviour
                         m_Instance = singletonObject.AddComponent<T>();
                         singletonObject.name = typeof(T).ToString() + " (Singleton)";
 
+#if !UNITY_EDITOR
                         // Make instance persistent.
                         DontDestroyOnLoad(singletonObject);
+#endif
                     }
                 }
 

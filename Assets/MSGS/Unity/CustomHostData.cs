@@ -20,7 +20,7 @@ namespace MiniScript.MSGS.Unity
         public CustomHostData()
         {
             dbID = System.Guid.NewGuid().ToString();
-            Database.DatabaseModule.workingContext.Add(dbID, new List<QueryCommand>());
+            //Database.DatabaseModule.workingContext.Add(dbID, new List<QueryCommand>());
         }
     }
 }

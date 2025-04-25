@@ -1,5 +1,4 @@
 using MiniScript.MSGS.Data;
-using MiniScript.MSGS.Data.Globals;
 using MiniScript.MSGS.MUUI;
 using MiniScript.MSGS.Audio;
 using MiniScript.MSGS.Scripts;
@@ -7,11 +6,14 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Threading.Tasks;
+using MiniScript.MSGS.Unity;
 
 namespace MiniScript.MSGS
 {
     public static class MiniScriptSingleton
     {
+        public static MiniScriptIntrinsicDebugOptions intrinsicDebugOptions;
+
         //public static GameModification currentMod;// = new GameModification();
         public static Dictionary<string, string> Scripts = new Dictionary<string, string>();
 
@@ -21,9 +23,7 @@ namespace MiniScript.MSGS
         static DataStoreMessagePool datamessagepool;
         //
         static InputEventMessagePool inputmessagepool;
-        //
-        public static ScriptableObjectContainer scriptableObjects;
-
+        
         //UI prefabs for instancing/managing
         public static PrefabContainer PrefabContainer;
         
@@ -69,16 +69,9 @@ namespace MiniScript.MSGS
         {
 #if UNITY_EDITOR
             Debug.Log("Editor: " + v);
-#else
-            
 #endif
         }
-        
-        static void OnGameTimeTick(GameTimeStruct time)
-        {
-            //scripts[UserAction.INTERNAL_GameTimeTick].RunUntilDone();
-        }
-
+       
         static void StandardOutput(string value)
         {
 #if UNITY_EDITOR
@@ -95,16 +88,12 @@ namespace MiniScript.MSGS
 
         static MiniScriptSingleton()
         {
-            //Application.targetFrameRate = 60;
+            intrinsicDebugOptions = new MiniScriptIntrinsicDebugOptions();
             ThingsToDoLock = new object();
             ThingsToDo = new Queue<Action>();
             EventSink = new DefaultEventSink();
-            scriptableObjects = new ScriptableObjectContainer();
             scheduler = new MiniScriptScriptScheduler(25);
-            //myThread = new System.Threading.Thread(
-            //    new System.Threading.ParameterizedThreadStart(ThreadLoop));
-
-            //PrefabContainer = Resources.Load<PrefabContainer>("MUUI_Prefabs");
+            PrefabContainer = Resources.Load<PrefabContainer>("PrefabContainer");
 
 #if UNITY_EDITOR
             UnityEditor.EditorApplication.quitting += EditorApplication_quitting;
@@ -155,7 +144,7 @@ namespace MiniScript.MSGS
                     }
                 }
             }
-            // Reutn the filestream, may be valid or null
+            // Return the filestream, may be valid or null
             return fs;
         }
 

@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using MiniScript.MSGS.MUUI.Extensions;
 using System;
+using MiniScript.MSGS.Unity;
 
 namespace MiniScript.MSGS.MUUI.TwoDimensional
 {

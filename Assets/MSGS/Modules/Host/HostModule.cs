@@ -1,6 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using MiniScript.MSGS.Unity;
+using MiniScript.MSGS.Data;
+using System.Data;
 
 namespace MiniScript.MSGS.Host
 {
@@ -78,6 +81,51 @@ namespace MiniScript.MSGS.Host
                 "Host",
                  new List<IntrinsicParameter>() { },
                 new IntrinsicParameter() { });
+            #endregion
+
+            a = Intrinsic.Create("");
+            #region Load DataModel
+            a.AddParam("file", string.Empty);
+            a.code = (context, partialResult) =>
+            {
+                if (debug) { Debug.Log("Host.LoadDataModel: " + context.GetLocalString("file")); }
+                if (context.GetLocalString("file").Length > 0)
+                {
+                    string fillet = context.GetLocalString("file");
+                    //this needs to descriminate between xml/json files and MiniScript script files
+                    if (fillet.EndsWith(".txt"))
+                    {   //its a MiniScript script file, or so we will assume here
+                        string ff = System.IO.File.ReadAllText(Application.streamingAssetsPath + "\\" +
+                            fillet);
+                        OneShotScript so = null;
+                        ScriptableObjectCache.soOneShots.TryDequeue(out so);
+                        so.debug = true;
+                        so.scriptSource = ff;
+                        so.Run();
+                    }
+                    else if (fillet.EndsWith(".xml"))
+                    {
+                        DataSet ds = new DataSet();
+                        ds.ReadXml(Application.streamingAssetsPath + "\\" + fillet);
+                        foreach (DataTable dt in ds.Tables)
+                        {
+                            if (!DataStoreWarehouse.Contains(dt.TableName))
+                            {
+                                DataStoreWarehouse.datastores.Tables.Add(dt);
+                            }
+                        }
+                    }
+                    else if (fillet.EndsWith(".json"))
+                    {
+                        //unsupported at this time
+                        Debug.LogError("Host.LoadDataModel does not suppport JSON files at this time.");
+                    }
+                }
+
+                return new Intrinsic.Result(null);
+            };
+
+            hostIntrinsics.map.Add(new ValString("LoadDataModel"), a.GetFunc());
             #endregion
 
             a = Intrinsic.Create("");
@@ -191,21 +239,21 @@ namespace MiniScript.MSGS.Host
             a.AddParam("value");
             a.code = (context, partialResult) =>
             {
-                if (debug) { Debug.Log("Host.PrettyPrint " + context.GetLocal("value").ToString()); }
+                if (debug) { Debug.Log("Host.PrettyPrint " + context.GetLocalString("value")); }
 
                 Value v = context.GetLocal("value");
                 string result = string.Empty;
-                if (v is ValNumber)
+                if (v.GetType() == typeof(ValNumber))
                 {
                     ValNumber v1 = v as ValNumber;
                     result = v1.ToString(context.vm);
                 }
-                else if (v is ValString)
+                else if (v.GetType() == typeof(ValString))
                 {
                     ValString v2 = v as ValString;
                     result = v2.value;
                 }
-                else if (v is ValMap)
+                else if (v.GetType() == typeof(ValMap))
                 {
                     ValMap v3 = v as ValMap;
                     System.Text.StringBuilder str = new System.Text.StringBuilder();
@@ -217,7 +265,7 @@ namespace MiniScript.MSGS.Host
                     str.Append("]");
                     result = str.ToString();
                 }
-                else if (v is ValList)
+                else if (v.GetType() == typeof(ValList))
                 {
                     System.Text.StringBuilder str = new System.Text.StringBuilder();
                     ValList v4 = v as ValList;
@@ -228,12 +276,6 @@ namespace MiniScript.MSGS.Host
                     }
                     result = str.ToString();
                 }
-                else if (v is ValFunction)
-                {
-                    ValFunction v6 = v as ValFunction;
-                    result = v6.ToString(context.vm);
-                }
-                else { result = "oopsie? " + v.FullEval(context).GetType().FullName; }
 
                 return new Intrinsic.Result(new ValString(result), true);
             };
@@ -257,6 +299,30 @@ namespace MiniScript.MSGS.Host
                     variableType = typeof(string),
                     Comment = "The string representation of the 'value' object passed to the instrinsic function."
                 });
+            #endregion
+
+            a = Intrinsic.Create("");
+            #region Run
+            a.AddParam("script", string.Empty);
+            a.code = (context, partialResult) =>
+            {
+                if (debug) { Debug.Log("Host.Run: " + context.GetLocalString("script")); }
+                if (context.GetLocalString("script").Length > 0)
+                {
+                    string fillet = context.GetLocalString("script");
+                    
+                    string ff = System.IO.File.ReadAllText(Application.streamingAssetsPath + "\\" +
+                        fillet);
+                    OneShotScript so = null;
+                    ScriptableObjectCache.soOneShots.TryDequeue(out so);
+                    so.debug = true;
+                    so.scriptSource = ff;
+                    so.Run();
+                }
+                return new Intrinsic.Result(null, true);
+            };
+
+            hostIntrinsics.map.Add(new ValString("Run"), a.GetFunc());
             #endregion
         }
     }

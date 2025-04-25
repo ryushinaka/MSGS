@@ -5,35 +5,30 @@ using UnityEngine.Events;
 using MiniScript.MSGS.Audio;
 using System;
 using System.Threading.Tasks;
+using MiniScript.MSGS.Time;
 
 namespace MiniScript.MSGS.Unity
 {
     public class MSGSSingleton : MonoBehaviour
     {
         System.Diagnostics.Stopwatch stopwatch;
-        [Tooltip("How many ticks to allow for processing queued Action's per frame")]
-        public long magicNumber = 500000;
 
         void Start()
         {
-            stopwatch = new System.Diagnostics.Stopwatch();
-
-            var go = new GameObject();
-            go.transform.localScale = new Vector3(1, 1, 1);
-            go.transform.SetParent(this.transform);
-            go.transform.localPosition = new Vector3(0, 0, 0);
-            go.AddComponent<AudioManager>();
+            stopwatch = new System.Diagnostics.Stopwatch();            
         }
 
         private void Update()
         {
-            //update UI values/properties here
 
         }
 
         private void FixedUpdate()
         {
+            TimeKeeper.Update(UnityEngine.Time.deltaTime); //update the game clock based on time elapsed
+
             //update physics here, the transforms for everything
+
         }
 
         void LateUpdate()
@@ -47,7 +42,7 @@ namespace MiniScript.MSGS.Unity
                 do
                 {
                     stopwatch.Start(); action?.Invoke(); stopwatch.Stop();
-                    if (stopwatch.ElapsedTicks >= magicNumber) return;
+                    //if (stopwatch.ElapsedTicks >= magicNumber) return;
                 }
                 while (MiniScriptSingleton.ThingsToDo.TryDequeue(out action));
 
@@ -76,77 +71,12 @@ namespace MiniScript.MSGS.Unity
             }
         }
 
-        private static readonly Queue<Action> _executionQueue = new Queue<Action>();
-
-        /// <summary>
-        /// Locks the queue and adds the IEnumerator to the queue
-        /// </summary>
-        /// <param name="action">IEnumerator function that will be executed from the main thread.</param>
-        public void Enqueue(IEnumerator action)
-        {
-            lock (_executionQueue)
-            {
-                _executionQueue.Enqueue(() =>
-                {
-                    StartCoroutine(action);
-                });
-            }
-        }
-
-        /// <summary>
-        /// Locks the queue and adds the Action to the queue
-        /// </summary>
-        /// <param name="action">function that will be executed from the main thread.</param>
-        public void Enqueue(Action action)
-        {
-            Enqueue(ActionWrapper(action));
-        }
-
-        /// <summary>
-        /// Locks the queue and adds the Action to the queue, returning a Task which is completed when the action completes
-        /// </summary>
-        /// <param name="action">function that will be executed from the main thread.</param>
-        /// <returns>A Task that can be awaited until the action completes</returns>
-        public Task EnqueueAsync(Action action)
-        {
-            var tcs = new TaskCompletionSource<bool>();
-
-            void WrappedAction()
-            {
-                try
-                {
-                    action();
-                    tcs.TrySetResult(true);
-                }
-                catch (Exception ex)
-                {
-                    tcs.TrySetException(ex);
-                }
-            }
-
-            Enqueue(ActionWrapper(WrappedAction));
-            return tcs.Task;
-        }
-
-        IEnumerator ActionWrapper(Action a)
-        {
-            a();
-            yield return null;
-        }
-
-        private static MSGSSingleton _instance = null;
-
-        public static bool Exists()
-        {
-            return _instance != null;
-        }
+        static MSGSSingleton _instance = null;
+        public static bool Exists() { return _instance != null; }
 
         public static MSGSSingleton Instance()
         {
-            if (!Exists())
-            {
-                throw new Exception("UnityMainThreadDispatcher could not find the UnityMainThreadDispatcher object. Please ensure you have added the MainThreadExecutor Prefab to your scene.");
-            }
+            if (!Exists()) { Debug.LogError("MSGS Singleton does not exist!"); }
             return _instance;
         }
 

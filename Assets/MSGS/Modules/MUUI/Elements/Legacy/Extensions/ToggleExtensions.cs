@@ -12,7 +12,7 @@ namespace MiniScript.MSGS.MUUI.Extensions
 {
     public static class ToggleExtensions 
     {
-        public static ValMap ToValMap(this MiniScript.MSGS.MUUI.TwoDimensional.Toggle toggle)
+        public static ValMap ToValMap(this MiniScript.MSGS.MUUI.TwoDimensional.MUUIToggle toggle)
         {
             ValMap rst = new ValMap();
             rst.map.Add(new ValString("enabled"), ValNumber.Truth(toggle.enabled));
@@ -30,7 +30,7 @@ namespace MiniScript.MSGS.MUUI.Extensions
             return rst;
         }
 
-        public static bool UpdateToggle(this MiniScript.MSGS.MUUI.TwoDimensional.Toggle toggle, Value a, Value b)
+        public static bool UpdateToggle(this MiniScript.MSGS.MUUI.TwoDimensional.MUUIToggle toggle, Value a, Value b)
         {
             if (a is ValString)
             {
@@ -295,7 +295,7 @@ namespace MiniScript.MSGS.MUUI.Extensions
             }
         }
 
-        public static void SetupToggle(this MiniScript.MSGS.MUUI.TwoDimensional.Toggle toggle, ref DataRow row)
+        public static void SetupToggle(this MiniScript.MSGS.MUUI.TwoDimensional.MUUIToggle toggle, ref DataRow row)
         {            
             toggle.gameObject.SetActive((bool)row["enabled"]);
             toggle.name = (string)row["name"];

@@ -6,6 +6,7 @@ using System.Data;
 using TMPro;
 using MiniScript;
 using System;
+using UnityEngine.EventSystems;
 
 #pragma warning disable IDE0090
 #pragma warning disable IDE0038
@@ -26,6 +27,49 @@ namespace MiniScript.MSGS.Unity
             }
             return false;
         }
+
+        #region Rect
+        public static ValMap ToValMap(this Rect r)
+        {
+            ValMap map = new ValMap();
+            map.map.Add(new ValString("left"), new ValNumber(r.xMin));
+            map.map.Add(new ValString("top"), new ValNumber(r.yMin));
+            map.map.Add(new ValString("right"), new ValNumber(r.xMax));
+            map.map.Add(new ValString("bottom"), new ValNumber(r.yMax));
+            map.map.Add(new ValString("height"), new ValNumber(r.height));
+            map.map.Add(new ValString("width"), new ValNumber(r.width));
+
+            map.map.Add(new ValString("x"), new ValNumber(r.x));
+            map.map.Add(new ValString("y"), new ValNumber(r.y));
+            map.map.Add(new ValString("center"), r.center.ToValMap());
+            map.map.Add(new ValString("position"), r.position.ToValMap());
+            map.map.Add(new ValString("size"), r.size.ToValMap());
+            return map;
+        }
+
+        public static Rect FromValMap(this ValMap map)
+        {
+            Rect r = new Rect();
+            r.xMin = map.map[new ValString("left")].FloatValue();
+            r.xMin = map.map[new ValString("top")].FloatValue();
+            r.xMin = map.map[new ValString("right")].FloatValue();
+            r.xMin = map.map[new ValString("bottom")].FloatValue();
+            r.xMin = map.map[new ValString("height")].FloatValue();
+            r.xMin = map.map[new ValString("width")].FloatValue();
+
+            r.xMin = map.map[new ValString("x")].FloatValue();
+            r.xMin = map.map[new ValString("y")].FloatValue();
+            var vm = (ValMap)map.map[new ValString("center")];
+            r.center = new Vector2().FromValMap(ref vm);
+            vm = (ValMap)map.map[new ValString("position")];
+            r.position = new Vector2().FromValMap(ref vm);
+            vm = (ValMap)map.map[new ValString("size")];
+            r.size = new Vector2().FromValMap(ref vm);
+            return r;
+        }
+
+
+        #endregion
 
         #region RectTransform
         public static void SetupRect(this RectTransform rect, ref DataRow row)
@@ -861,25 +905,28 @@ namespace MiniScript.MSGS.Unity
             rst.values.Add(new ValNumber(color.a));
             return rst;
         }
-        public static void FromValList(this UnityEngine.Color color, ValList map)
+        public static Color ToColor(this ValList map)
         {
+            Color color = new Color();
             if (map.values.Count == 3)
             {
                 color.r = map.values[0].FloatValue();
-                color.g = map.values[0].FloatValue();
-                color.b = map.values[0].FloatValue();
+                color.g = map.values[1].FloatValue();
+                color.b = map.values[2].FloatValue();
             }
             else if (map.values.Count == 4)
             {
                 color.r = map.values[0].FloatValue();
-                color.g = map.values[0].FloatValue();
-                color.b = map.values[0].FloatValue();
-                color.a = map.values[0].FloatValue();
+                color.g = map.values[1].FloatValue();
+                color.b = map.values[2].FloatValue();
+                color.a = map.values[3].FloatValue();
             }
             else
             {
                 Debug.Log("UnityEngine.Color.FromValList: extension method expected 3 or 4 values and was given " + map.values.Count + " instead.");
             }
+
+            return color;
         }
         #endregion
 
@@ -1103,6 +1150,192 @@ namespace MiniScript.MSGS.Unity
             UnityEngine.Random.State blarg = new UnityEngine.Random.State();
             unsafe { fixed (byte* ptr = bitss) { blarg = *(UnityEngine.Random.State*)ptr; } }
             return blarg;
+        }
+        #endregion
+
+        #region Resolution
+        public static ValMap ToValMap(this Resolution res)
+        {
+            ValMap map = new ValMap();
+            map.map.Add(new ValString("height"), new ValNumber(res.height));
+            map.map.Add(new ValString("width"), new ValNumber(res.width));
+            map.map.Add(new ValString("refreshnum"), new ValNumber(res.refreshRateRatio.numerator));
+            map.map.Add(new ValString("refreshden"), new ValNumber(res.refreshRateRatio.denominator));
+            map.map.Add(new ValString("refreshvalue"), new ValNumber(res.refreshRateRatio.value));
+            return map;
+        }
+        public static UnityEngine.Resolution ToResolution(this ValMap map)
+        {
+            UnityEngine.Resolution res = new Resolution();
+            res.height = map["height"].IntValue();
+            res.width = map["width"].IntValue();
+            res.refreshRateRatio = new RefreshRate()
+            {
+                numerator = map["refreshnum"].UIntValue(),
+                denominator = map["refreshden"].UIntValue()
+            };
+            return res;
+        }
+
+        public static ValList ToValList(this Resolution res)
+        {
+            ValList tmp = new ValList();
+            tmp.values.Add(new ValNumber(res.height));
+            tmp.values.Add(new ValNumber(res.width));
+            tmp.values.Add(new ValNumber(res.refreshRateRatio.numerator));
+            tmp.values.Add(new ValNumber(res.refreshRateRatio.denominator));
+            tmp.values.Add(new ValNumber(res.refreshRateRatio.value));
+
+            return tmp;
+        }
+        public static UnityEngine.Resolution ToResolution(this ValList lst)
+        {
+            UnityEngine.Resolution res = new Resolution();
+            res.height = lst.values[0].IntValue();
+            res.width = lst.values[1].IntValue();
+            res.refreshRateRatio = new RefreshRate()
+            {
+                numerator = lst.values[2].UIntValue(),
+                denominator = lst.values[3].UIntValue()
+            };
+
+            return res;
+        }
+
+        public static ValList ToValList(this Resolution[] res)
+        {
+            ValList lst = new ValList();
+            foreach (Resolution r in res)
+            {
+                lst.values.Add(r.ToValMap());
+            }
+            return lst;
+        }
+        #endregion
+
+        #region FullScreenMode
+        public static ValNumber ToValNumber(this FullScreenMode mode)
+        {
+            ValNumber num = new ValNumber(-1);
+
+            if (mode == FullScreenMode.ExclusiveFullScreen) { num.value = 0; }
+            else if (mode == FullScreenMode.FullScreenWindow) { num.value = 1; }
+            else if (mode == FullScreenMode.MaximizedWindow) { num.value = 2; }
+            else if (mode == FullScreenMode.Windowed) { num.value = 3; }
+
+            return num;
+        }
+
+        public static FullScreenMode ToFullScreenMode(this ValNumber num)
+        {
+            switch (num.value)
+            {
+                case 0: return FullScreenMode.ExclusiveFullScreen;
+                case 1: return FullScreenMode.FullScreenWindow;
+                case 2: return FullScreenMode.MaximizedWindow;
+                case 3: return FullScreenMode.Windowed;
+            }
+
+            //default to whatever was set on application load
+            return UnityCachedValues.FullScreenMode;
+        }
+        #endregion
+
+        #region DisplayInfo
+        private static ValMap ToValMap(this RefreshRate rr)
+        {
+            ValMap map2 = new ValMap();
+            map2["refreshnum"] = new ValNumber(rr.numerator);
+            map2["refreshden"] = new ValNumber(rr.denominator);
+            map2["rate"] = new ValNumber(rr.value);
+            map2["refresh"] = map2;
+            return map2;
+        }
+        public static ValMap ToValMap(this DisplayInfo di)
+        {
+            ValMap map = new ValMap();
+            map["width"] = new ValNumber(di.width);
+            map["height"] = new ValNumber(di.height);
+            map["name"] = new ValString(di.name);
+            di.refreshRate.ToValMap();
+
+            return map;
+        }
+        #endregion
+
+        #region ScreenOrientation
+        public static ValNumber ToValNumber(this ScreenOrientation so)
+        {
+            switch (so)
+            {
+                case ScreenOrientation.AutoRotation: return new ValNumber(5);
+                case ScreenOrientation.LandscapeRight: return new ValNumber(4);
+                case ScreenOrientation.LandscapeLeft: return new ValNumber(3);
+                case ScreenOrientation.PortraitUpsideDown: return new ValNumber(2);
+                case ScreenOrientation.Portrait: return new ValNumber(1);
+            };
+
+            MiniScriptSingleton.LogInfo("ScreenOrientation.ToValNumber was given an unhandled value of {" + so.ToString() + "}");
+            return new ValNumber(0);
+        }
+
+        public static ScreenOrientation ToOrientation(this ValNumber num)
+        {
+            switch (num.value)
+            {
+                case 1: return ScreenOrientation.Portrait;
+                case 2: return ScreenOrientation.PortraitUpsideDown;
+                case 3: return ScreenOrientation.LandscapeLeft;
+                case 4: return ScreenOrientation.LandscapeRight;
+                case 5: return ScreenOrientation.AutoRotation;
+            }
+            //if we reached here then we got an invalid value for the ValNumber, so lets inform the debugger
+            MiniScriptSingleton.LogInfo("ScreenOrientation.FromValNumber was given an unhandled value of {" + num.value + "}");
+
+            return ScreenOrientation.AutoRotation;
+        }
+        #endregion
+
+        #region PointerEventData
+        public static ValMap ToValMap(this PointerEventData ped) {
+            
+
+
+            return null; 
+        }
+
+        public static PointerEventData ToPointerEventData(this ValMap map) {
+            PointerEventData ped = new PointerEventData(EventSystem.current);
+
+
+            return ped; 
+        }
+        #endregion
+
+        #region ColorBlock
+        public static ValMap ToValMap(this ColorBlock block)
+        {
+            ValMap map = new ValMap();
+            map.map.Add(new ValString("colorMultiplier"), new ValNumber(block.colorMultiplier));
+            map.map.Add(new ValString("fadeDuration"), new ValNumber(block.fadeDuration));
+            map.map.Add(new ValString("disabledColor"), block.disabledColor.ToValList());
+            map.map.Add(new ValString("highlightedColor"), block.highlightedColor.ToValList());
+            map.map.Add(new ValString("normalColor"), block.normalColor.ToValList());
+            map.map.Add(new ValString("pressedColor"), block.pressedColor.ToValList());
+
+            return map;
+        }
+        public static ColorBlock ColorBlock(ref ValMap map)
+        {
+            ColorBlock cb = UnityEngine.UI.ColorBlock.defaultColorBlock;
+            cb.colorMultiplier = ((ValNumber)map.map[new ValString("colorMultiplier")]).FloatValue(); 
+            cb.fadeDuration = ((ValNumber)map.map[new ValString("fadeDuration")]).FloatValue();
+            cb.disabledColor = ((ValList)map.map[new ValString("disabledColor")]).ToColor();
+            cb.highlightedColor = ((ValList)map.map[new ValString("highlightedColor")]).ToColor();
+            cb.normalColor = ((ValList)map.map[new ValString("normalColor")]).ToColor();
+            cb.pressedColor = ((ValList)map.map[new ValString("pressedColor")]).ToColor();
+
+            return cb;
         }
         #endregion
     }

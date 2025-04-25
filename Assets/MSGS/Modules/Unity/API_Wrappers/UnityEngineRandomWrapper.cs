@@ -202,7 +202,7 @@ namespace MiniScript.MSGS.Unity
 
                 if (context.GetLocal("vl") != null)
                 {
-                    var vl = context.GetLocal("vl") as ValList;
+                    ValList vl = context.GetLocal("vl") as ValList;
                     UnityEngine.Random.State tmpState = UnityTypeExtensions.BaseRandomState();
                     if (vl != null && vl.values.Count == 16)
                     {

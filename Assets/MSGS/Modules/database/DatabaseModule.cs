@@ -16,7 +16,7 @@ namespace MiniScript.MSGS.Database
         /// </summary>
         public static Dictionary<string, List<QueryCommand>> workingContext;
 
-        public static bool testMode = false;
+        public static bool debug = false;
 
         static ValMap dbIntrinsics;
 
@@ -135,7 +135,7 @@ namespace MiniScript.MSGS.Database
         public static object EnqueueQuery(string id, QueryCommandType qcType, object mvalue)
         {
             //testMode gives us full UnityEngine.Debug.Log() output from each mechanism
-            if (testMode)
+            if (debug)
             {
 
                 

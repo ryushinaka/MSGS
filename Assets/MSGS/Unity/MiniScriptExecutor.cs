@@ -14,6 +14,7 @@ using MiniScript.MSGS.XML;
 using MiniScript.MSGS.Zip;
 using MiniScript.MSGS.Network;
 using MiniScript.MSGS.ScriptableObjects;
+using MiniScript.MSGS.Scripts;
 
 namespace MiniScript.MSGS
 {
@@ -45,18 +46,18 @@ namespace MiniScript.MSGS
             intp.standardOutput = StdOutput;
             intp.Compile();
             //add the modules desired to the globals valmap for script access
-            if (ScriptAsset.Archive) { }
-            if (ScriptAsset.Audio) { }
-            if (ScriptAsset.Data) { intp.SetGlobalValue("data", DataIntrinsics.Get()); }
-            if (ScriptAsset.Database) { }
-            if (ScriptAsset.Host) { intp.SetGlobalValue("host", HostModule.Get()); }
-            if (ScriptAsset.Json) { intp.SetGlobalValue("json", JsonModule.Get()); }
-            if (ScriptAsset.Network) { intp.SetGlobalValue("network", NetworkModule.Get()); }
-            if (ScriptAsset.MUUI) { intp.SetGlobalValue("ui", MUUIIntrinsics.Get()); }
-            if (ScriptAsset.Schedule) { intp.SetGlobalValue("schedule", ScheduleManager.Get()); }
-            if (ScriptAsset.Time) { intp.SetGlobalValue("time", TimeKeeper.Get()); }
-            if (ScriptAsset.XML) { intp.SetGlobalValue("xml", XmlModule.Get()); }
-            if (ScriptAsset.Zip) { intp.SetGlobalValue("zip", ZipModule.Get()); }
+            intp.SetGlobalValue("Audio", ScriptModuleConfiguration.Audio);
+            intp.SetGlobalValue("Data", ScriptModuleConfiguration.Data);
+            intp.SetGlobalValue("Database", ScriptModuleConfiguration.Database);
+            intp.SetGlobalValue("Host", ScriptModuleConfiguration.Host);
+            intp.SetGlobalValue("Json", ScriptModuleConfiguration.Json);
+            intp.SetGlobalValue("UI", ScriptModuleConfiguration.UI);
+            intp.SetGlobalValue("Network", ScriptModuleConfiguration.Network);
+            intp.SetGlobalValue("Schedule", ScriptModuleConfiguration.Schedule);
+            intp.SetGlobalValue("Time", ScriptModuleConfiguration.Time);
+            intp.SetGlobalValue("Xml", ScriptModuleConfiguration.Xml);
+            intp.SetGlobalValue("Zip", ScriptModuleConfiguration.Zip);
+            intp.SetGlobalValue("Unity", ScriptModuleConfiguration.Unity);
 
             System.Diagnostics.Stopwatch watch = new System.Diagnostics.Stopwatch();
             watch.Start();

@@ -9,14 +9,16 @@ namespace MiniScript.MSGS.Unity.DevConsole
     public class ConsoleKeyListener : MonoBehaviour
     {
         public KeyCode ActivationKey;
-        public Canvas Canvas;
+        public GameObject Parent;
         public TMPro.TextMeshProUGUI Output;
         public TMPro.TMP_InputField input;
         public int outputCharLimit, textOutputFontSize, textInputFontSize, caretPosition;
 
         public Color inputColor, inputBGColor, outputColor, outputBGColor;
 
-        const string allowedChars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()-=+_{}[]\\/;:'\",.<>";
+        public bool debugMode = false;
+
+        const string allowedChars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()-=+_{}[]\\/;:'\",.<> ";
 
         void Start()
         {   
@@ -28,17 +30,17 @@ namespace MiniScript.MSGS.Unity.DevConsole
         {
             if (Input.GetKeyDown(KeyCode.BackQuote))
             {
-                bool previous = Canvas.gameObject.activeSelf; //store the previous state of the controller
+                bool previous = Parent.gameObject.activeSelf; //store the previous state of the controller
                 //flip the state of the controller
-                Canvas.gameObject.SetActive(!Canvas.gameObject.activeSelf);
+                Parent.gameObject.SetActive(!Parent.gameObject.activeSelf);
                 //if its active, set the inputfield as focused
-                if (Canvas.gameObject.activeSelf && !previous)
+                if (Parent.gameObject.activeSelf && !previous)
                 {
                     //input.Select();
                     input.ActivateInputField();
                     input.stringPosition = caretPosition;
                 }
-                else if(!Canvas.gameObject.activeSelf)
+                else if(!Parent.gameObject.activeSelf)
                 {
                     //store the caret position so it remembers it when activated again
                     caretPosition = input.caretPosition;
@@ -47,7 +49,7 @@ namespace MiniScript.MSGS.Unity.DevConsole
             else if (Input.GetKeyDown(KeyCode.Escape))
             {
                 //close the window
-                Canvas.gameObject.SetActive(false);
+                Parent.gameObject.SetActive(false);
             }
         }
 
@@ -60,6 +62,7 @@ namespace MiniScript.MSGS.Unity.DevConsole
         char ValidateInput(string s, int i, char c)
         {
             if (allowedChars.Contains(c)) { return c; }
+            //else { Debug.Log("hmm? " + c); }
             return '\0';
         }
 
@@ -67,7 +70,7 @@ namespace MiniScript.MSGS.Unity.DevConsole
         {
             var so = ScriptableObject.CreateInstance<ConsoleCommandSO>();
             so.OutputEvent.AddListener(new UnityEngine.Events.UnityAction<string>(OutputMessage));
-
+            so.debug = debugMode;
             so.scriptSource = line;
             so.Run();
             //while the script is running, remove the input line from the textbox
@@ -75,6 +78,8 @@ namespace MiniScript.MSGS.Unity.DevConsole
 
             //prevent the object avoiding garbage collection by removing event subs
             so.OutputEvent.RemoveAllListeners();
+
+            input.Select();
         }
 
         void OutputMessage(string line)

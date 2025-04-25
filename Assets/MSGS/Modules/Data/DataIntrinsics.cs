@@ -9,7 +9,7 @@ namespace MiniScript.MSGS.Data
 {
     public static class DataIntrinsics
     {
-        public static bool testMode = false;
+        public static bool debug = false;
 
         static bool hasInitialized = false;
         public static bool HasInitialized
@@ -33,7 +33,7 @@ namespace MiniScript.MSGS.Data
             a.AddParam("typename", string.Empty);
             a.code = (context, partialResult) =>
             {
-                if (testMode) { Debug.Log("CreateDataStore: " + context.GetLocalString("typename")); }
+                if (debug) { Debug.Log("CreateDataStore: " + context.GetLocalString("typename")); }
 
                 DataStoreWarehouse.DataStoreCreate(context.GetLocalString("typename"));
 
@@ -57,7 +57,7 @@ namespace MiniScript.MSGS.Data
             a.AddParam("typename", "");
             a.code = (context, partialResult) =>
             {
-                if (testMode) { Debug.Log("RemoveDataStore: " + context.GetLocalString("typename")); }
+                if (debug) { Debug.Log("RemoveDataStore: " + context.GetLocalString("typename")); }
 
                 DataStoreWarehouse.DataStoreUnload(context.GetLocalString("typename"), false);
 
@@ -79,7 +79,7 @@ namespace MiniScript.MSGS.Data
             #region GetTypeStoreList
             a.code = (context, partialResult) =>
             {
-                if (testMode) { Debug.Log("GetTypeStoreList"); }
+                if (debug) { Debug.Log("GetTypeStoreList"); }
 
                 var l = DataStoreWarehouse.DataStoreList().ToValList();
 
@@ -99,13 +99,86 @@ namespace MiniScript.MSGS.Data
             #endregion
 
             a = Intrinsic.Create("");
+            #region GetTypeStore
+            a.AddParam("type", string.Empty);
+            a.code = (context, partialResult) =>
+            {
+                if (context.GetLocalString("type").Length > 0)
+                {
+                    string t = context.GetLocalString("type");
+                    if (DataStoreWarehouse.Contains(t))
+                    {   //return the ValList containing the ValMaps of each record for the given Type requested
+                        return new Intrinsic.Result(DataStoreWarehouse.DataStoreGetInstances(t));
+                    }
+                }
+                //return an empty ValList otherwise, so the script doesnt have to handle NULL
+                return new Intrinsic.Result(new ValList());
+            };
+
+            dataIntrinsics.map.Add(new ValString("GetTypeStore"), a.GetFunc());
+
+            IntrinsicsHelpMetadata.Create("GetTypeStore",
+               "Returns the ValList containing ValMap elements of the Type requested.",
+               "Data",
+               new List<IntrinsicParameter>() {
+                   new IntrinsicParameter()
+                   {
+                       Name = "Typename",
+                       variableType = typeof(string),
+                       Comment = "The name of the Type in storage to return instances of."
+                   }
+               },
+                new IntrinsicParameter()
+                {
+                    Name = "return",
+                    variableType = typeof(ValList),
+                    Comment = "A ValList containing ValMap elements representing each instance of the Type in storage."
+                });
+            #endregion
+
+            a = Intrinsic.Create("");
+            #region HasTypeStore
+            a.AddParam("type", string.Empty);
+            a.code = (context, partialResult) =>
+            {
+                if (context.GetLocalString("type").Length > 0)
+                {
+                    string t = context.GetLocalString("type");
+                    if (DataStoreWarehouse.Contains(t)) { return new Intrinsic.Result(ValNumber.Truth(true)); }
+                }
+                //return false by default
+                return new Intrinsic.Result(ValNumber.Truth(false));
+            };
+
+            dataIntrinsics.map.Add(new ValString("HasTypeStore"), a.GetFunc());
+
+            IntrinsicsHelpMetadata.Create("HasTypeStore",
+               "Returns true if the Type given has storage, false otherwise.",
+               "Data",
+               new List<IntrinsicParameter>() {
+                   new IntrinsicParameter()
+                   {
+                       Name = "Typename",
+                       variableType = typeof(string),
+                       Comment = "The name of the Type in storage to check the existence of."
+                   }
+               },
+                new IntrinsicParameter()
+                {
+                    Name = "return",
+                    variableType = typeof(bool),
+                    Comment = "True if it exists, false otherwise."
+                });
+            #endregion
+
+            a = Intrinsic.Create("");
             #region Select
             a.AddParam("type", string.Empty);
             a.AddParam("property", string.Empty);
             a.AddParam("value", string.Empty);
             a.code = (context, partialResult) =>
             {
-                if (testMode)
+                if (debug)
                 {
                     Debug.Log("Select: " + context.GetLocalString("type") + " " +
                         context.GetLocalString("property") + " " +
@@ -145,7 +218,7 @@ namespace MiniScript.MSGS.Data
             a.AddParam("pattern", "");
             a.code = (context, partialResult) =>
             {
-                if (testMode)
+                if (debug)
                 {
                     Debug.Log("SelectRegx: " + context.GetLocalString("type") + " " + context.GetLocalString("property") + " " +
         context.GetLocalString("pattern"));
@@ -182,7 +255,7 @@ namespace MiniScript.MSGS.Data
             a.AddParam("upper");
             a.code = (context, partialResult) =>
             {
-                if (testMode)
+                if (debug)
                 {
                     Debug.Log("SelectRange: " + context.GetLocalString("type") + " " + context.GetLocalString("property") + " " +
         context.GetLocalString("lower") + " " + context.GetLocalString("upper"));
@@ -217,7 +290,7 @@ namespace MiniScript.MSGS.Data
             a.AddParam("type", string.Empty);
             a.code = (context, partialResult) =>
             {
-                if (testMode) { Debug.Log("GetRandomInstance: " + context.GetLocalString("type")); }
+                if (debug) { Debug.Log("GetRandomInstance: " + context.GetLocalString("type")); }
 
                 var rf = DataStoreWarehouse.DataStoreGetRandomInstance(context.GetLocalString("type"));
                 if (rf != null) { return new Intrinsic.Result(rf); }
@@ -242,7 +315,7 @@ namespace MiniScript.MSGS.Data
             a.AddParam("unique", 0);
             a.code = (context, partialResult) =>
             {
-                if (testMode)
+                if (debug)
                 {
                     Debug.Log("GetRandomInstances: " + context.GetLocalString("type") + " " + context.GetLocalString("quantity") + " " +
         context.GetLocalString("unique"));
@@ -278,7 +351,7 @@ namespace MiniScript.MSGS.Data
             a.AddParam("type", "");
             a.code = (context, partialResult) =>
             {
-                if (testMode) { Debug.Log("GetInstances: " + context.GetLocalString("type")); }
+                if (debug) { Debug.Log("GetInstances: " + context.GetLocalString("type")); }
 
                 return new Intrinsic.Result(DataStoreWarehouse.DataStoreGetInstances(context.GetLocalString("type")));
             };
@@ -307,7 +380,7 @@ namespace MiniScript.MSGS.Data
             a.AddParam("index", 0);
             a.code = (context, partialResult) =>
             {
-                if (testMode) { Debug.Log("GetInstanceAtIndex: " + context.GetLocalString("type")); }
+                if (debug) { Debug.Log("GetInstanceAtIndex: " + context.GetLocalString("type")); }
 
                 return new Intrinsic.Result(DataStoreWarehouse.DataStoreGetInstanceAtIndex(context.GetLocalString("type"),
                     context.GetLocalInt("index")));
@@ -329,7 +402,7 @@ namespace MiniScript.MSGS.Data
             a.AddParam("map", string.Empty);
             a.code = (context, partialResult) =>
             {
-                if (testMode) { Debug.Log("RemoveInstance: " + context.GetLocalString("type") + " " + context.GetLocalString("map")); }
+                if (debug) { Debug.Log("RemoveInstance: " + context.GetLocalString("type") + " " + context.GetLocalString("map")); }
 
                 DataStoreWarehouse.DataStoreDestroyInstance(context.GetLocalString("type"), context.GetLocal("map") as ValMap);
 
@@ -354,7 +427,7 @@ namespace MiniScript.MSGS.Data
             a.AddParam("list", new ValList());
             a.code = (context, partialResult) =>
             {
-                if (testMode)
+                if (debug)
                 {
                     if (context.GetLocal("list") == null) { Debug.Log("RemoveInstances: " + context.GetLocalString("type") + " " + 0); }
                     else { Debug.Log("RemoveInstances: " + context.GetLocalString("type") + " " + ((ValList)context.GetLocal("list")).values.ToString()); }
@@ -388,18 +461,12 @@ namespace MiniScript.MSGS.Data
             a.AddParam("vm", new ValMap());
             a.code = (context, partialResult) =>
             {
-                if (testMode) { Debug.Log("UpdateInstance: " + context.GetLocalString("type")); }
+                if (debug) { Debug.Log("UpdateInstance: " + context.GetLocalString("type")); }
 
                 if (DataStoreWarehouse.Contains(context.GetLocalString("type")))
                 {
                     var x = context.GetLocal("vm") as ValMap;
-                    if (x != null)
-                    {
-                        if (x.map.Keys.Count > 0)
-                        {
-                            DataStoreWarehouse.UpdateInstance(context.GetLocalString("type"), ref x);
-                        }
-                    }
+                    DataStoreWarehouse.UpdateInstance(context.GetLocalString("type"), ref x);                  
                 }
 
                 return new Intrinsic.Result(null, true);
@@ -421,7 +488,7 @@ namespace MiniScript.MSGS.Data
             a.AddParam("type", "");
             a.code = (context, partialResult) =>
             {
-                if (testMode) { Debug.Log("CreateInstance: " + context.GetLocalString("type")); }
+                if (debug) { Debug.Log("CreateInstance: " + context.GetLocalString("type")); }
 
                 ValMap vm = null;
                 DataStoreWarehouse.DataStoreCreateInstance(context.GetLocalString("type"), out vm);
@@ -444,7 +511,7 @@ namespace MiniScript.MSGS.Data
             a.AddParam("quantity", 0);
             a.code = (context, partialResult) =>
             {
-                if (testMode) { Debug.Log("CreateInstances: " + context.GetLocalString("type") + " " + context.GetLocalInt("quantity")); }
+                if (debug) { Debug.Log("CreateInstances: " + context.GetLocalString("type") + " " + context.GetLocalInt("quantity")); }
 
                 DataStoreWarehouse.DataStoreCreateInstances(
                     context.GetLocalString("type"),
@@ -469,7 +536,7 @@ namespace MiniScript.MSGS.Data
             a.AddParam("type", "");
             a.code = (context, partialResult) =>
             {
-                if (testMode) { Debug.Log("InstanceQuantity"); }
+                if (debug) { Debug.Log("InstanceQuantity"); }
 
                 ValNumber qty;
                 DataStoreWarehouse.DataStoreInstanceCount(context.GetLocalString("type"), out qty);
@@ -493,7 +560,7 @@ namespace MiniScript.MSGS.Data
             a.AddParam("propertyname", "");
             a.code = (context, partialResult) =>
             {
-                if (testMode) { Debug.Log("HasAttribute: " + context.GetLocalString("type") + " " + context.GetLocalString("propertyname")); }
+                if (debug) { Debug.Log("HasAttribute: " + context.GetLocalString("type") + " " + context.GetLocalString("propertyname")); }
 
                 ValNumber tf;
                 DataStoreWarehouse.DataStoreHasAttribute(context.GetLocalString("type"), context.GetLocalString("propertyname"), out tf);
@@ -518,7 +585,7 @@ namespace MiniScript.MSGS.Data
             a.AddParam("propertytype", string.Empty);
             a.code = (context, partialResult) =>
             {
-                if (testMode)
+                if (debug)
                 {
                     Debug.Log("AddAttribute: " + context.GetLocalString("type") + " " + context.GetLocalString("propertyname") + " " +
                         context.GetLocal("propertytype").ToString());
@@ -552,7 +619,7 @@ namespace MiniScript.MSGS.Data
             a.AddParam("propertyname", "");
             a.code = (context, partialResult) =>
             {
-                if (testMode) { Debug.Log("RemoveAttribute: " + context.GetLocalString("type") + " " + context.GetLocalString("propertyname")); }
+                if (debug) { Debug.Log("RemoveAttribute: " + context.GetLocalString("type") + " " + context.GetLocalString("propertyname")); }
 
                 ValNumber tf;
                 DataStoreWarehouse.DataStoreRemoveAttribute(
@@ -579,7 +646,7 @@ namespace MiniScript.MSGS.Data
             a.AddParam("type", "");
             a.code = (context, partialResult) =>
             {
-                if (testMode) { Debug.Log("DataStoreSave: " + context.GetLocalString("type")); }
+                if (debug) { Debug.Log("DataStoreSave: " + context.GetLocalString("type")); }
 
                 DataStoreWarehouse.DataStoreSave(context.GetLocalString("type"));
 
@@ -604,7 +671,7 @@ namespace MiniScript.MSGS.Data
             a.AddParam("forceReplace", 0); //default to false
             a.code = (context, partialResult) =>
             {
-                if (testMode) { Debug.Log("LoadDataStore: " + context.GetLocalString("type")); }
+                if (debug) { Debug.Log("LoadDataStore: " + context.GetLocalString("type")); }
 
                 DataStoreWarehouse.DataStoreLoad(
                     context.GetLocalString("type"),
@@ -630,7 +697,7 @@ namespace MiniScript.MSGS.Data
             a.AddParam("saveFirst", 0); //default to false
             a.code = (context, partialResult) =>
             {
-                if (testMode) { Debug.Log("UnloadDataStore: " + context.GetLocalString("type")); }
+                if (debug) { Debug.Log("UnloadDataStore: " + context.GetLocalString("type")); }
 
                 DataStoreWarehouse.DataStoreUnload(
                     context.GetLocalString("type"),
@@ -656,7 +723,7 @@ namespace MiniScript.MSGS.Data
             a.AddParam("savename", "");
             a.code = (context, partialResult) =>
             {
-                if (testMode) { Debug.Log("SaveState: " + context.GetLocalString("savename")); }
+                if (debug) { Debug.Log("SaveState: " + context.GetLocalString("savename")); }
 
                 DataStoreWarehouse.StateSave(
                     context.GetLocalString("savename"));
@@ -678,7 +745,7 @@ namespace MiniScript.MSGS.Data
             #region CreateAutosave
             a.code = (context, partialResult) =>
             {
-                if (testMode) { Debug.Log("CreateAutosave"); }
+                if (debug) { Debug.Log("CreateAutosave"); }
 
                 DataStoreWarehouse.StateAutoSave();
                 return new Intrinsic.Result(null);
@@ -698,7 +765,7 @@ namespace MiniScript.MSGS.Data
             a.AddParam("savename", "");
             a.code = (context, partialResult) =>
             {
-                if (testMode) { Debug.Log("LoadState: " + context.GetLocalString("savename")); }
+                if (debug) { Debug.Log("LoadState: " + context.GetLocalString("savename")); }
 
                 DataStoreWarehouse.StateLoad(context.GetLocalString("savename"));
                 return new Intrinsic.Result(null);
@@ -720,7 +787,7 @@ namespace MiniScript.MSGS.Data
             #region LoadAutosave
             a.code = (context, partialResult) =>
             {
-                if (testMode) { Debug.Log("LoadAutosave"); }
+                if (debug) { Debug.Log("LoadAutosave"); }
 
                 DataStoreWarehouse.StateLoad("autosave");
                 return new Intrinsic.Result(ValNumber.Truth(false));
@@ -740,7 +807,7 @@ namespace MiniScript.MSGS.Data
             {
                 var vl = DataStoreWarehouse.GetStates();
 
-                if (testMode)
+                if (debug)
                 {
                     string rst = string.Empty;
                     ValString vref;

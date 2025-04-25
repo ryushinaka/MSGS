@@ -32,7 +32,6 @@ RectTransform:
   - {fileID: 6938273304404144410}
   - {fileID: 6938273304954388397}
   m_Father: {fileID: 6938273304610126693}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
@@ -85,7 +84,6 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 6938273303576256212}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
@@ -243,7 +241,6 @@ RectTransform:
   m_Children:
   - {fileID: 6938273303576256212}
   m_Father: {fileID: 0}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -398,10 +395,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 98a6b82c5a8c7fe4f9c0d21f6161d1ee, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Rect: {fileID: 6938273304610126693}
   Inputfield: {fileID: 6938273304610126690}
   Placeholder: {fileID: 6938273304404144408}
   Text: {fileID: 6938273304954388394}
   Mask: {fileID: 6938273303576256213}
+  ScriptOnEnter: 
+  ScriptOnExit: 
+  ScriptOnLeftClick: 
+  ScriptOnScrollUp: 
+  ScriptOnScrollDown: 
+  ScriptOnDoubleLeftClick: 
+  ScriptOnRightClick: 
+  ScriptOnDoubleRightClick: 
+  ScriptOnMiddleClick: 
 --- !u!1 &6938273304954388396
 GameObject:
   m_ObjectHideFlags: 0
@@ -433,7 +440,6 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 6938273303576256212}
-  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}

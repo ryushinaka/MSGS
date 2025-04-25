@@ -16,16 +16,6 @@ namespace MiniScript.MSGS.MUUI
         //public bool createSpriteAtlas;
         SpriteSheet _spriteatlas;
 
-        void Start()
-        {
-
-        }
-
-        void Update()
-        {
-
-        }
-
         List<GameObject> listOfChildren;
         List<Component> listOfComponents;
         DataSet _set;
@@ -58,7 +48,7 @@ namespace MiniScript.MSGS.MUUI
         }
 
         [Button("Create Prefab")]
-        void CreateMSUI_Prefab()
+        public void CreateMSUI_Prefab()
         {
             _set = CreateDefaultDataSet(PrefabName);
             _set.DataSetName = PrefabName;
@@ -105,7 +95,7 @@ namespace MiniScript.MSGS.MUUI
                         #region
 
                         dr = _set.Tables["Button"].NewRow();
-                        MiniScript.MSGS.MUUI.TwoDimensional.Button muibutton = (MiniScript.MSGS.MUUI.TwoDimensional.Button)c;
+                        MiniScript.MSGS.MUUI.TwoDimensional.MUUIButton muibutton = (MiniScript.MSGS.MUUI.TwoDimensional.MUUIButton)c;
                         dr["OwnerInstanceID"] = c.transform.GetInstanceID();
                         if (muibutton.transform.parent != null)
                         { dr["ChildOf"] = muibutton.transform.parent.GetInstanceID(); }
@@ -193,7 +183,7 @@ namespace MiniScript.MSGS.MUUI
                     case "MiniScript.MSGS.MUUI.TwoDimensional.ButtonAnimated":
                         #region
                         dr = _set.Tables["ButtonAnimated"].NewRow();
-                        ButtonAnimated buttonani = (ButtonAnimated)c;
+                        MUUIButtonAnimated buttonani = (MUUIButtonAnimated)c;
                         dr["OwnerInstanceID"] = c.transform.GetInstanceID();
                         if (buttonani.transform.parent != null)
                         { dr["ChildOf"] = buttonani.transform.parent.GetInstanceID(); }
@@ -320,7 +310,7 @@ namespace MiniScript.MSGS.MUUI
                     #endregion
                     case "MiniScript.MSGS.MUUI.TwoDimensional.Image":
                         #region
-                        MiniScript.MSGS.MUUI.TwoDimensional.Image i = (MiniScript.MSGS.MUUI.TwoDimensional.Image)c;
+                        MiniScript.MSGS.MUUI.TwoDimensional.MUUIImage i = (MiniScript.MSGS.MUUI.TwoDimensional.MUUIImage)c;
                         dr = _set.Tables["Image"].NewRow();
                         dr["OwnerInstanceID"] = c.transform.GetInstanceID();
                         if (i.transform.parent != null)
@@ -366,7 +356,7 @@ namespace MiniScript.MSGS.MUUI
                     #endregion
                     case "MiniScript.MSGS.MUUI.TwoDimensional.ImageAnimated":
                         #region
-                        ImageAnimated ia = (ImageAnimated)c;
+                        MUUIImageAnimated ia = (MUUIImageAnimated)c;
                         dr = _set.Tables["ImageAnimated"].NewRow();
                         dr["OwnerInstanceID"] = c.transform.GetInstanceID();
                         if (ia.transform.parent != null)
@@ -448,7 +438,7 @@ namespace MiniScript.MSGS.MUUI
                     #endregion
                     case "MiniScript.MSGS.MUUI.TwoDimensional.Text":
                         #region
-                        MiniScript.MSGS.MUUI.TwoDimensional.Text text = (MiniScript.MSGS.MUUI.TwoDimensional.Text)c;
+                        MiniScript.MSGS.MUUI.TwoDimensional.MUUIText text = (MiniScript.MSGS.MUUI.TwoDimensional.MUUIText)c;
                         dr = _set.Tables["Text"].NewRow();
                         dr["OwnerInstanceID"] = text.transform.GetInstanceID();
                         if (text.transform.parent != null)
@@ -491,7 +481,7 @@ namespace MiniScript.MSGS.MUUI
                     #endregion
                     case "MiniScript.MSGS.MUUI.TwoDimensional.Panel":
                         #region
-                        Panel p = (Panel)c;
+                        MUUIPanel p = (MUUIPanel)c;
                         dr = _set.Tables["Panel"].NewRow();
                         dr["OwnerInstanceID"] = c.transform.GetInstanceID();
                         if (p.transform.parent != null)
@@ -521,7 +511,7 @@ namespace MiniScript.MSGS.MUUI
                     #endregion
                     case "MiniScript.MSGS.MUUI.TwoDimensional.DropDown":
                         #region
-                        DropDown drop = (DropDown)c;
+                        MUUIDropDown drop = (MUUIDropDown)c;
                         dr = _set.Tables["DropDown"].NewRow();
                         dr["OwnerInstanceID"] = drop.transform.GetInstanceID();
                         if (drop.transform.parent != null)
@@ -571,7 +561,7 @@ namespace MiniScript.MSGS.MUUI
                     #endregion
                     case "MiniScript.MSGS.MUUI.TwoDimensional.Scrollview":
                         #region
-                        Scrollview sv = (Scrollview)c;
+                        MUUIScrollview sv = (MUUIScrollview)c;
                         dr = _set.Tables["Scrollview"].NewRow();
                         dr["OwnerInstanceID"] = sv.transform.GetInstanceID();
                         if (sv.transform.parent != null)
@@ -721,7 +711,7 @@ namespace MiniScript.MSGS.MUUI
                     #endregion
                     case "MiniScript.MSGS.MUUI.TwoDimensional.Slider":
                         #region
-                        MiniScript.MSGS.MUUI.TwoDimensional.Slider sl = (MiniScript.MSGS.MUUI.TwoDimensional.Slider)c;
+                        MiniScript.MSGS.MUUI.TwoDimensional.MUUISlider sl = (MiniScript.MSGS.MUUI.TwoDimensional.MUUISlider)c;
                         dr = _set.Tables["Slider"].NewRow();
                         dr["name"] = sl.name;
                         dr["enabled"] = sl.gameObject.activeSelf;
@@ -746,7 +736,7 @@ namespace MiniScript.MSGS.MUUI
                     #endregion
                     case "MiniScript.MSGS.MUUI.TwoDimensional.Toggle":
                         #region
-                        MiniScript.MSGS.MUUI.TwoDimensional.Toggle togg = (MiniScript.MSGS.MUUI.TwoDimensional.Toggle)c;
+                        MiniScript.MSGS.MUUI.TwoDimensional.MUUIToggle togg = (MiniScript.MSGS.MUUI.TwoDimensional.MUUIToggle)c;
                         dr = _set.Tables["Toggle"].NewRow();
                         dr["OwnerInstanceID"] = togg.transform.GetInstanceID();
                         if (togg.transform.parent != null)
@@ -821,7 +811,7 @@ namespace MiniScript.MSGS.MUUI
             return parseChildren;
         }
 
-        static internal DataSet CreateDefaultDataSet(string prefabname)
+        public static DataSet CreateDefaultDataSet(string prefabname)
         {
             DataSet set = new DataSet();
             set.DataSetName = prefabname;

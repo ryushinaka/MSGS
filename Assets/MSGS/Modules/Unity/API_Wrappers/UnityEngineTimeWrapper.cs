@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading;
 using UnityEngine;
 
 namespace MiniScript.MSGS.Unity
@@ -327,16 +328,16 @@ namespace MiniScript.MSGS.Unity
             {
                 if (debug) Debug.Log("UnityEngine.Time.realtimeSinceStartup()");
 
-                var wi = AlternateThreadDispatcher.Get();
-                wi.Module = UnityModuleName.Time;
-                wi.FunctionName = UnityEngineTimeFunctions.realtimeSinceStartup;
+                //var wi = AlternateThreadDispatcher.Get();
+                //wi.Module = UnityModuleName.Time;
+                //wi.FunctionName = UnityEngineTimeFunctions.realtimeSinceStartup;
 
-                AlternateThreadDispatcher.Enqueue(ref wi);
-                wi.eventSlim.Wait();
-                var result = (float)wi.result;
-                AlternateThreadDispatcher.Return(ref wi);
+                //AlternateThreadDispatcher.Enqueue(ref wi);
+                //wi.eventSlim.Wait();
+                //var result = (float)wi.result;
+                //AlternateThreadDispatcher.Return(ref wi);
 
-                return new Intrinsic.Result(result);
+                return new Intrinsic.Result(UnityCachedValues.realTimeSinceStartup);
             };
             map.map.Add(new ValString("realTimeSinceStartup"), a.GetFunc());
 
@@ -356,17 +357,22 @@ namespace MiniScript.MSGS.Unity
             {
                 if (debug) Debug.Log("UnityEngine.Time.frameCount()");
 
-                var wi = AlternateThreadDispatcher.Get();
-                wi.Module = UnityModuleName.Time;
-                wi.FunctionName = UnityEngineTimeFunctions.frameCount;
+                //this code is left here for documentation, as for some reason this code causes a hard lock
+                //in the UnityEditor & standalone build. see UnityHacksStatic.cs for explanation
 
-                AlternateThreadDispatcher.Enqueue(ref wi);
-                wi.eventSlim.Wait();
-                var result = (int)wi.result;
-                AlternateThreadDispatcher.Return(ref wi);
+                //var wi = AlternateThreadDispatcher.Get();
+                //wi.Module = UnityModuleName.Time;
+                //wi.FunctionName = UnityEngineTimeFunctions.frameCount;
 
-                return new Intrinsic.Result(result);
+                //AlternateThreadDispatcher.Enqueue(ref wi);
+                //wi.eventSlim.Wait();
+                //var result = (int)wi.result;
+                //AlternateThreadDispatcher.Return(ref wi);
+
+                //return new Intrinsic.Result(result);
+                return new Intrinsic.Result((double)UnityCachedValues.frameCount);
             };
+
             map.map.Add(new ValString("frameCount"), a.GetFunc());
 
             IntrinsicsHelpMetadata.Create("frameCount",

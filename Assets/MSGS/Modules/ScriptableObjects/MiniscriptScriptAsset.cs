@@ -1,20 +1,12 @@
+using System;
 using UnityEngine;
 using Sirenix.OdinInspector;
 using System.Collections.Generic;
-using MiniScript.MSGS.Audio;
-using MiniScript.MSGS.Data;
-using MiniScript.MSGS.Time;
-using MiniScript.MSGS.Host;
-using MiniScript.MSGS.Json;
-using MiniScript.MSGS.Schedule;
-using MiniScript.MSGS.MUUI;
-using MiniScript.MSGS.XML;
-using MiniScript.MSGS.Zip;
-using MiniScript.MSGS.Network;
-using MiniScript.MSGS.ScriptableObjects;
+using MiniScript.MSGS.Scripts;
 
 namespace MiniScript.MSGS.ScriptableObjects
 {
+    [Serializable]
     [CreateAssetMenu(menuName = "MiniScript/New Script")]
     public class MiniScriptScriptAsset : MiniScriptScriptableObject
     {
@@ -24,56 +16,6 @@ namespace MiniScript.MSGS.ScriptableObjects
         [Tooltip("These are scripts that are added before this scripts contents are compiled." +
             "\n" + "This is like a #include from C++")]
         public List<MiniScriptScriptAsset> PrependedScripts = new List<MiniScriptScriptAsset>();
-
-        #region Modules List
-        [FoldoutGroup("Modules")]
-        [Tooltip("Does this script require access to Archive module?")]
-        public bool Archive;
-
-        [FoldoutGroup("Modules")]
-        [Tooltip("Does this script require access to Audio module?")]
-        public bool Audio;
-
-        [FoldoutGroup("Modules")]
-        [Tooltip("Does this script require access to the value store in-memory module?")]
-        public bool Data;
-
-        [FoldoutGroup("Modules")]
-        [Tooltip("Does this script require access to the database (sqlite) module?")]
-        public bool Database;
-
-        [FoldoutGroup("Modules")]
-        [Tooltip("Does this script require access to the host (Unity3D) module?")]
-        public bool Host;
-
-        [FoldoutGroup("Modules")]
-        [Tooltip("Does this script require access to the Json module?")]
-        public bool Json;
-
-        [FoldoutGroup("Modules")]
-        [Tooltip("Does this script require access to UI module?")]
-        public bool MUUI;
-
-        [FoldoutGroup("Modules")]
-        [Tooltip("Does this script require access to the IP network module?")]
-        public bool Network;
-
-        [FoldoutGroup("Modules")]
-        [Tooltip("Does this script require access to script scheduling module?")]
-        public bool Schedule;
-
-        [FoldoutGroup("Modules")]
-        [Tooltip("Does this script require access to Time/Clock module?")]
-        public bool Time;
-
-        [FoldoutGroup("Modules")]
-        [Tooltip("Does this script require access to XML module?")]
-        public bool XML;
-
-        [FoldoutGroup("Modules")]
-        [Tooltip("Does this script require access to Zip module?")]
-        public bool Zip;
-        #endregion
 
         [ShowInInspector, TextArea(5, 150)]
         public string ScriptContent;
@@ -91,6 +33,15 @@ namespace MiniScript.MSGS.ScriptableObjects
             return str.ToString();
         }
 
+        public Interpreter GetInterpreter()
+        {
+            Interpreter intp = new Interpreter(GetScriptFull());
+            intp.Compile();
+            ScriptModuleConfiguration.AssignGlobals(ref intp);
+
+            return intp;
+        }
+
         #region ScriptableObject inherited methods
         [Button]
         public void ForceValidate()
@@ -98,18 +49,18 @@ namespace MiniScript.MSGS.ScriptableObjects
             Interpreter intp = new Interpreter(); //our script interpreter instance
             System.Text.StringBuilder str = new System.Text.StringBuilder();
             #region modules
-            //if (Archive) { intp.SetGlobalValue("archive", ArchiveHandler.Get()); }
-            if (Audio) { intp.SetGlobalValue("audio", AudioIntrinsics.Get()); }
-            if (Data) { intp.SetGlobalValue("data", DataIntrinsics.Get()); }
-            if (Database) { intp.SetGlobalValue("db", null); }
-            if (Host) { intp.SetGlobalValue("host", HostModule.Get()); }
-            if (Json) { intp.SetGlobalValue("json", JsonModule.Get()); }
-            if (Network) { intp.SetGlobalValue("network", NetworkModule.Get()); }
-            if (MUUI) { intp.SetGlobalValue("ui", MUUIIntrinsics.Get()); }
-            if (Schedule) { intp.SetGlobalValue("schedule", ScheduleManager.Get()); }
-            if (Time) { intp.SetGlobalValue("time", TimeKeeper.Get()); }
-            if (XML) { intp.SetGlobalValue("xml", XmlModule.Get()); }
-            if (Zip) { intp.SetGlobalValue("zip", ZipModule.Get()); }
+            intp.SetGlobalValue("Audio", ScriptModuleConfiguration.Audio);
+            intp.SetGlobalValue("Data", ScriptModuleConfiguration.Data);
+            intp.SetGlobalValue("Database", ScriptModuleConfiguration.Database);
+            intp.SetGlobalValue("Host", ScriptModuleConfiguration.Host);
+            intp.SetGlobalValue("Json", ScriptModuleConfiguration.Json);
+            intp.SetGlobalValue("UI", ScriptModuleConfiguration.UI);
+            intp.SetGlobalValue("Network", ScriptModuleConfiguration.Network);
+            intp.SetGlobalValue("Schedule", ScriptModuleConfiguration.Schedule);
+            intp.SetGlobalValue("Time", ScriptModuleConfiguration.Time);
+            intp.SetGlobalValue("Xml", ScriptModuleConfiguration.Xml);
+            intp.SetGlobalValue("Zip", ScriptModuleConfiguration.Zip);
+            intp.SetGlobalValue("Unity", ScriptModuleConfiguration.Unity);
             #endregion
 
             foreach (MiniScriptScriptAsset mssa in PrependedScripts)
@@ -151,48 +102,39 @@ namespace MiniScript.MSGS.ScriptableObjects
         {
             //Debug.Log("SO validate start: " + this.name);
             //validate the contents of the Script Asset
-            Interpreter intp = new Interpreter();
-            System.Text.StringBuilder str = new System.Text.StringBuilder();
-            #region modules
-            //if (Archive) { intp.SetGlobalValue("archive", ArchiveHandler.Get()); }
-            if (Audio) { intp.SetGlobalValue("audio", AudioIntrinsics.Get()); }
-            if (Data) { intp.SetGlobalValue("data", DataIntrinsics.Get()); }
-            if (Database) { intp.SetGlobalValue("db", null); }
-            if (Host) { intp.SetGlobalValue("host", HostModule.Get()); }
-            if (Json) { intp.SetGlobalValue("json", JsonModule.Get()); }
-            if (Network) { intp.SetGlobalValue("network", NetworkModule.Get()); }
-            if (MUUI) { intp.SetGlobalValue("ui", MUUIIntrinsics.Get()); }
-            if (Schedule) { intp.SetGlobalValue("schedule", ScheduleManager.Get()); }
-            if (Time) { intp.SetGlobalValue("time", TimeKeeper.Get()); }
-            if (XML) { intp.SetGlobalValue("xml", XmlModule.Get()); }
-            if (Zip) { intp.SetGlobalValue("zip", ZipModule.Get()); }
-            #endregion
+            //Interpreter intp = new Interpreter();
+            //System.Text.StringBuilder str = new System.Text.StringBuilder();
+            //ScriptModuleConfiguration.AssignGlobals(ref intp);
+            
+            //if (PrependedScripts != null && PrependedScripts.Count > 0)
+            //{
+            //    foreach (MiniScriptScriptAsset mssa in PrependedScripts) { str.AppendLine(mssa.GetScriptFull()); }
+            //}
 
-            foreach (MiniScriptScriptAsset mssa in PrependedScripts) { str.AppendLine(mssa.GetScriptFull()); }
+            //str.AppendLine(ScriptContent);
 
-            str.AppendLine(ScriptContent);
-
-            var parser = new Parser();
-            string result = string.Empty;
-            try
-            {
-                //we just need the parser for this validation
-                parser.Parse(str.ToString(), false);
-                //its possible there is an incomplete statement in the script, so we check for that
-                if (parser.NeedMoreInput()) { result += this.name + " script is incomplete."; }
-            }
-            catch (MiniScriptException mse)
-            {
-                if (mse.location != null)
-                {
-                    if (result.Length > 0) { result += "\n Script Error @Line " + mse.location.lineNum + " " + mse.Message; }
-                    else { result += "Script Error @Line " + mse.location.lineNum + " " + mse.Message; }
-                }
-                else
-                {
-                    result += "Script Error @Line " + mse.location.lineNum + " " + mse.Message;
-                }
-            }
+            //var parser = new Parser();
+            //string result = string.Empty;
+            //try
+            //{
+            //    //we just need the parser for this validation
+            //    parser.Parse(str.ToString(), false);
+            //    //its possible there is an incomplete statement in the script, so we check for that
+            //    if (parser.NeedMoreInput()) { result += this.name + " script is incomplete."; }
+            //}
+            //catch (MiniScriptException mse)
+            //{
+            //    if (mse.location != null)
+            //    {
+            //        if (result.Length > 0) { result += "\n Script Error @Line " + mse.location.lineNum + " " + mse.Message; }
+            //        else { result += "Script Error @Line " + mse.location.lineNum + " " + mse.Message; }
+            //    }
+            //    else
+            //    {
+            //        //result += "Script Error @Line " + mse.location.lineNum + " " + mse.Message;
+            //        //this needs to be handled but UnityEditor calls this inconsistently/incorrectly
+            //    }
+            //}
 #if UNITY_EDITOR
             //if(result.Length > 0) { Debug.Log("OnValidate(" + this.name + "): " + result); }
 #endif

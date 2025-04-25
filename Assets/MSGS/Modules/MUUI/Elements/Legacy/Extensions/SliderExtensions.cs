@@ -12,7 +12,7 @@ namespace MiniScript.MSGS.MUUI.Extensions
 {
     public static class SliderExtensions
     {
-        public static ValMap ToValMap(this MiniScript.MSGS.MUUI.TwoDimensional.Slider slider)
+        public static ValMap ToValMap(this MiniScript.MSGS.MUUI.TwoDimensional.MUUISlider slider)
         {
             ValMap rst = new ValMap();
             rst.map.Add(new ValString("name"), new ValString(slider.name));
@@ -25,7 +25,7 @@ namespace MiniScript.MSGS.MUUI.Extensions
             return rst;
         }
 
-        public static bool UpdateSlider(this MiniScript.MSGS.MUUI.TwoDimensional.Slider slider, Value a, Value b)
+        public static bool UpdateSlider(this MiniScript.MSGS.MUUI.TwoDimensional.MUUISlider slider, Value a, Value b)
         {
             if(a is ValString)
             {
@@ -144,7 +144,7 @@ namespace MiniScript.MSGS.MUUI.Extensions
             }
         }
 
-        public static void SetupSlider(this MiniScript.MSGS.MUUI.TwoDimensional.Slider slider, ref DataRow row)
+        public static void SetupSlider(this MiniScript.MSGS.MUUI.TwoDimensional.MUUISlider slider, ref DataRow row)
         {
             slider.name = (string)row["name"];            
             slider.gameObject.SetActive((bool)row["enabled"]);

@@ -7,6 +7,7 @@ using System.IO;
 using System.Data;
 using MiniScript.MSGS.MUUI.Extensions;
 using MiniScript.MSGS.MUUI.TwoDimensional;
+using MiniScript.MSGS.Unity;
 
 namespace MiniScript.MSGS.MUUI
 {
@@ -38,18 +39,22 @@ namespace MiniScript.MSGS.MUUI
             {
                 if (File.text.Length > 0)
                 {
-
                     var stream = new MemoryStream();
                     stream.Write(File.bytes);
+                    //Debug.Log("streamed bytes " + File.bytes.Length);
+
                     stream.Position = 0;
                     DataSet set = new DataSet();
                     set.ReadXml(stream, XmlReadMode.ReadSchema);
 
-                    //System.Threading.Thread.Sleep(12);
+                    //Debug.Log("tables " + set.Tables.Count);
+                    //System.Threading.Thread.Sleep(16);
 
                     //spawn all the prefabs based on the dataset records
                     //objects = new List<Tuple<int, int, GameObject>>();
                     SpawnPrefabs(ref set, this.transform);
+
+                    //Debug.Log("spawned");
                 }
             }
         }
@@ -60,12 +65,21 @@ namespace MiniScript.MSGS.MUUI
             objects = new List<Tuple<int, int, GameObject>>();
             GameObject topNode = new GameObject(set.DataSetName);
             DataRow rect = null;
-
+            
             //find the topNode and assign it
             foreach (DataRow vdr in set.Tables["GameObjects"].Rows)
             {
+                int zzz = 0;
+                if (!int.TryParse(vdr["childof"].ToString(), out zzz)) {
+                    foreach(DataColumn dc in set.Tables["GameObjects"].Columns)
+                    {
+                        Debug.Log(dc.ColumnName + ":" + vdr[dc]);
+                    }                    
+                    continue;
+                }
+
                 //append hierarchy tuple data for sorting node depths
-                if ((int)vdr["childof"] == -1)
+                if (int.Parse(vdr["childof"].ToString()) == -1)
                 {
                     topNode.name = (string)vdr["Name"];
                     topNode.AddComponent<RectTransform>();
@@ -86,15 +100,16 @@ namespace MiniScript.MSGS.MUUI
                 if ((int)dr["childof"] != -1)
                 {
                     int id = (int)dr["instanceid"]; //instanceid of the gameobject
-                    GameObject go = null; //new GameObject((string)dr["Name"]); //instantiate
+                    GameObject go = null;
 
                     //determine what each gameobject represents in the data graph
-                    DataRow[] rows = set.Tables["Button"].Select("OwnerInstanceID=" + id);
+                    DataRow[] rows = null;
+                    rows = set.Tables["Button"].Select("OwnerInstanceID=" + id);
                     if (rows.Length > 0)
                     {
                         //Debug.Log(id + " " + (int)dr["childof"] + " button");
                         go = Instantiate(MiniScriptSingleton.PrefabContainer.ButtonPrefab);
-                        go.GetComponent<MiniScript.MSGS.MUUI.TwoDimensional.Button>().SetupButton(ref rows[0]);
+                        go.GetComponent<MiniScript.MSGS.MUUI.TwoDimensional.MUUIButton>().SetupButton(ref rows[0]);
                         rect = set.Tables["RectTransform"].Select("OwnerInstanceID=" + id)[0]; //get position data
                         go.GetComponent<RectTransform>().SetupRect(ref rect); //set position
                         objects.Add(Tuple.Create<int, int, GameObject>(id, (int)dr["childof"], go));
@@ -106,7 +121,7 @@ namespace MiniScript.MSGS.MUUI
                         //Debug.Log(id + " " + (int)dr["childof"] + " buttonanimated");
                         go = Instantiate(MiniScriptSingleton.PrefabContainer.ButtonAnimatedPrefab);
                         var sprites = set.Tables["SpritesTable"].Select("OwnerInstanceID=" + id);
-                        go.GetComponent<MiniScript.MSGS.MUUI.TwoDimensional.ButtonAnimated>().SetupButton(ref rows[0], ref sprites);
+                        go.GetComponent<MiniScript.MSGS.MUUI.TwoDimensional.MUUIButtonAnimated>().SetupButton(ref rows[0], ref sprites);
                         rect = set.Tables["RectTransform"].Select("OwnerInstanceID=" + id)[0];
                         go.GetComponent<RectTransform>().SetupRect(ref rect);
                         objects.Add(Tuple.Create<int, int, GameObject>(id, (int)dr["childof"], go));
@@ -121,7 +136,7 @@ namespace MiniScript.MSGS.MUUI
                         Texture2D tex = new Texture2D(1, 1);
                         tex.LoadImage(barr);
                         var sp = Sprite.Create(tex, new Rect(0, 0, tex.width, tex.height), new Vector2(0, 0));
-                        go.GetComponent<MiniScript.MSGS.MUUI.TwoDimensional.Image>().SetupImage(ref rows[0]);
+                        go.GetComponent<MiniScript.MSGS.MUUI.TwoDimensional.MUUIImage>().SetupImage(ref rows[0]);
                         rect = set.Tables["RectTransform"].Select("OwnerInstanceID=" + id)[0];
                         go.GetComponent<RectTransform>().SetupRect(ref rect);
                         objects.Add(Tuple.Create<int, int, GameObject>(id, (int)dr["childof"], go));
@@ -136,7 +151,7 @@ namespace MiniScript.MSGS.MUUI
                         Texture2D tex = new Texture2D(1, 1);
                         tex.LoadImage(barr);
                         var sp = Sprite.Create(tex, new Rect(0, 0, tex.width, tex.height), new Vector2(0, 0));
-                        go.GetComponent<MiniScript.MSGS.MUUI.TwoDimensional.Image>().SetupImage(ref rows[0]);
+                        go.GetComponent<MiniScript.MSGS.MUUI.TwoDimensional.MUUIImage>().SetupImage(ref rows[0]);
                         rect = set.Tables["RectTransform"].Select("OwnerInstanceID=" + id)[0];
                         go.GetComponent<RectTransform>().SetupRect(ref rect);
                         objects.Add(Tuple.Create<int, int, GameObject>(id, (int)dr["childof"], go));
@@ -147,7 +162,7 @@ namespace MiniScript.MSGS.MUUI
                     {
                         //Debug.Log(id + " " + (int)dr["childof"] + " text");
                         go = Instantiate(MiniScriptSingleton.PrefabContainer.TextPrefab);
-                        go.GetComponent<MiniScript.MSGS.MUUI.TwoDimensional.Text>().SetupText(ref rows[0]);
+                        go.GetComponent<MiniScript.MSGS.MUUI.TwoDimensional.MUUIText>().SetupText(ref rows[0]);
                         rect = set.Tables["RectTransform"].Select("OwnerInstanceID=" + id)[0];
                         go.GetComponent<RectTransform>().SetupRect(ref rect);
                         objects.Add(Tuple.Create<int, int, GameObject>(id, (int)dr["childof"], go));
@@ -158,7 +173,7 @@ namespace MiniScript.MSGS.MUUI
                     {
                         //Debug.Log(id + " " + (int)dr["childof"] + " panel");
                         go = Instantiate(MiniScriptSingleton.PrefabContainer.PanelPrefab);
-                        go.GetComponent<MiniScript.MSGS.MUUI.TwoDimensional.Panel>().SetupPanel(ref rows[0]);
+                        go.GetComponent<MiniScript.MSGS.MUUI.TwoDimensional.MUUIPanel>().SetupPanel(ref rows[0]);
                         rect = set.Tables["RectTransform"].Select("OwnerInstanceID=" + id)[0];
                         go.GetComponent<RectTransform>().SetupRect(ref rect);
                         objects.Add(Tuple.Create<int, int, GameObject>(id, (int)dr["childof"], go));
@@ -169,7 +184,7 @@ namespace MiniScript.MSGS.MUUI
                     {
                         //Debug.Log(id + " " + (int)dr["childof"] + " canvas");
                         go = Instantiate(MiniScriptSingleton.PrefabContainer.CanvasPrefab);
-                        go.GetComponent<MiniScript.MSGS.MUUI.TwoDimensional.Canvas>().SetupCanvas(ref rows[0]);
+                        go.GetComponent<MiniScript.MSGS.MUUI.TwoDimensional.MUUICanvas>().SetupCanvas(ref rows[0]);
                         rect = set.Tables["RectTransform"].Select("OwnerInstanceID=" + id)[0];
                         go.GetComponent<RectTransform>().SetupRect(ref rect);
                         objects.Add(Tuple.Create<int, int, GameObject>(id, (int)dr["childof"], go));
@@ -180,7 +195,7 @@ namespace MiniScript.MSGS.MUUI
                     {
                         //Debug.Log(id + " " + (int)dr["childof"] + " dropdown");
                         go = Instantiate(MiniScriptSingleton.PrefabContainer.DropDownPrefab);
-                        go.GetComponent<MiniScript.MSGS.MUUI.TwoDimensional.DropDown>().SetupDropDown(ref rows[0]);
+                        go.GetComponent<MiniScript.MSGS.MUUI.TwoDimensional.MUUIDropDown>().SetupDropDown(ref rows[0]);
                         rect = set.Tables["RectTransform"].Select("OwnerInstanceID=" + id)[0];
                         go.GetComponent<RectTransform>().SetupRect(ref rect);
                         objects.Add(Tuple.Create<int, int, GameObject>(id, (int)dr["childof"], go));
@@ -191,7 +206,7 @@ namespace MiniScript.MSGS.MUUI
                     {
                         //Debug.Log(id + " " + (int)dr["childof"] + " inputfield");
                         go = Instantiate(MiniScriptSingleton.PrefabContainer.InputFieldPrefab);
-                        go.GetComponent<MiniScript.MSGS.MUUI.TwoDimensional.InputField>().SetupInputField(ref rows[0]);
+                        go.GetComponent<MiniScript.MSGS.MUUI.TwoDimensional.MUUIInputField>().SetupInputField(ref rows[0]);
                         rect = set.Tables["RectTransform"].Select("OwnerInstanceID=" + id)[0];
                         go.GetComponent<RectTransform>().SetupRect(ref rect);
                         objects.Add(Tuple.Create<int, int, GameObject>(id, (int)dr["childof"], go));
@@ -202,7 +217,7 @@ namespace MiniScript.MSGS.MUUI
                     {
                         //Debug.Log(id + " " + (int)dr["childof"] + " scrollview");
                         go = Instantiate(MiniScriptSingleton.PrefabContainer.ScrollViewPrefab);
-                        go.GetComponent<MiniScript.MSGS.MUUI.TwoDimensional.Scrollview>().SetupScrollview(ref rows[0]);
+                        go.GetComponent<MiniScript.MSGS.MUUI.TwoDimensional.MUUIScrollview>().SetupScrollview(ref rows[0]);
                         rect = set.Tables["RectTransform"].Select("OwnerInstanceID=" + id)[0];
                         go.GetComponent<RectTransform>().SetupRect(ref rect);
                         objects.Add(Tuple.Create<int, int, GameObject>(id, (int)dr["childof"], go));
@@ -213,7 +228,7 @@ namespace MiniScript.MSGS.MUUI
                     {
                         //Debug.Log(id + " " + (int)dr["childof"] + " slider");
                         go = Instantiate(MiniScriptSingleton.PrefabContainer.SliderPrefab);
-                        go.GetComponent<MiniScript.MSGS.MUUI.TwoDimensional.Slider>().SetupSlider(ref rows[0]);
+                        go.GetComponent<MiniScript.MSGS.MUUI.TwoDimensional.MUUISlider>().SetupSlider(ref rows[0]);
                         rect = set.Tables["RectTransform"].Select("OwnerInstanceID=" + id)[0];
                         go.GetComponent<RectTransform>().SetupRect(ref rect);
                         objects.Add(Tuple.Create<int, int, GameObject>(id, (int)dr["childof"], go));
@@ -224,25 +239,22 @@ namespace MiniScript.MSGS.MUUI
                     {
                         //Debug.Log(id + " " + (int)dr["childof"] + " toggle");
                         go = Instantiate(MiniScriptSingleton.PrefabContainer.TogglePrefab);
-                        go.GetComponent<MiniScript.MSGS.MUUI.TwoDimensional.Toggle>().SetupToggle(ref rows[0]);
+                        go.GetComponent<MiniScript.MSGS.MUUI.TwoDimensional.MUUIToggle>().SetupToggle(ref rows[0]);
                         rect = set.Tables["RectTransform"].Select("OwnerInstanceID=" + id)[0];
                         go.GetComponent<RectTransform>().SetupRect(ref rect);
                         objects.Add(Tuple.Create<int, int, GameObject>(id, (int)dr["childof"], go));
                         continue;
-                    }
+                    }    
                 }
             }
 
             var tobeRemoved = new List<Tuple<int, int, GameObject>>();
-
-            //foreach (Tuple<int, int, GameObject> tu in objects)
-            //{
-            //    Debug.Log(tu.Item1 + " / " + tu.Item2 + " / " + tu.Item3.name);
-            //}
-
+            
+            Debug.Log("objects: " + objects.Count);
+            
             //instanceID, childOF, GO instance
             foreach (Tuple<int, int, GameObject> tu in objects)
-            {   
+            {
                 if (tu.Item2 != -1) //we are a child of some object
                 {
                     //find our parent

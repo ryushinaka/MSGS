@@ -1,0 +1,39 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: abfd13be4ce45a94a851143da6478e49, type: 3}
+  m_Name: onStartSetup
+  m_EditorClassIdentifier: 
+  serializationData:
+    SerializedFormat: 2
+    SerializedBytes: 
+    ReferencedUnityObjects: []
+    SerializedBytesString: 
+    Prefab: {fileID: 0}
+    PrefabModificationsReferencedUnityObjects: []
+    PrefabModifications: []
+    SerializationNodes: []
+  Label: 
+  ScriptableObjectType: 1
+  PrependedScripts: []
+  ScriptContent: "//in Start() we'll setup the clock values and interval increment
+    lengths\n\nmyClock = \"winner\" //create a variable to store our clock settings\nif
+    globals[\"Data\"].HasTypeStore(\"clock\") == false then\n\tglobals[\"Data\"].CreateDataStore(\"clock\")\n\n//total
+    number of ticks that have occured in-game\n\tglobals[\"Data\"].AttributeAdd(\"clock\",
+    \"tickcount\", 0)\n//the current speed multiplier for the clock\n\tglobals[\"Data\"].AttributeAdd(\"clock\",
+    \"speed\", 0)\n\tglobals[\"Data\"].AttributeAdd(\"clock\", \"state\", \"\")\n\tglobals[\"Data\"].AttributeAdd(\"clock\",
+    \"elapsedtime\", 0)\n\tglobals[\"Data\"].AttributeAdd(\"clock\", \"startedwhen\",
+    0)\n\n\tmyClock = globals[\"Data\"].CreateInstance(\"clock\")\n\tmyClock[\"state\"]
+    = \"stopped\"\n\tmyClock[\"elapsedtime\"] = 0\n\tmyClock[\"tickcount\"] = 0\n\tmyClock[\"speed\"]
+    = 1\n\n\t//this ensures it is globally acessible from any other scripts or Interpreter
+    instances that may exist\n\tglobals[\"Data\"].UpdateInstance(\"clock\", myClock)
+    //update the backend instead of just the local script copy\nend if\n\nglobals[\"Host\"].LogInfo
+    \"Init'd clock\""

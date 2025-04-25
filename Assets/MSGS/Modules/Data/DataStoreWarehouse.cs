@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Data;
 using MiniScript.MSGS.Extensions;
@@ -8,11 +9,9 @@ namespace MiniScript.MSGS.Data
     public static class DataStoreWarehouse
     {
         #region private
-        //static GameModification currentMod;
-
         //the List of "data tables" in memory currently
         static object lock_datastores;
-        static DataSet datastores;
+        public static DataSet datastores;
         #endregion
 
         #region Events
@@ -41,21 +40,27 @@ namespace MiniScript.MSGS.Data
             for (int i = 0; i < datastores.Tables[table].Rows.Count; i++)
             {
                 string rowpid = datastores.Tables[table].Rows[i]["PrimaryKey"].ToString();
-                string mappid = map["PrimaryKey"].ToString();
+                string mappid = map.map[new ValString("PrimaryKey")].ToString();
                 if (rowpid.Equals(mappid))
                 {
                     foreach (DataColumn dc in datastores.Tables[table].Columns)
                     {
-                        if (dc.GetType() == typeof(double))
+                        if (dc.DataType == typeof(double))
                         {
-                            datastores.Tables[table].Rows[i][dc] = map[dc.ColumnName].DoubleValue();
+                            datastores.Tables[table].Rows[i][dc] = map.map[new ValString(dc.ColumnName)].DoubleValue();
+                            //Debug.Log("D " + dc.ColumnName + " / " + map.map[new ValString(dc.ColumnName)].DoubleValue().ToString());
                         }
-                        else if (dc.GetType() == typeof(string))
+                        else if (dc.DataType == typeof(string))
                         {
-                            datastores.Tables[table].Rows[i][dc] = map[dc.ColumnName].ToString();
+                            datastores.Tables[table].Rows[i][dc] = map.map[new ValString(dc.ColumnName)];
+                            //Debug.Log("S " + dc.ColumnName + " / " + map.map[new ValString(dc.ColumnName)].ToString());
+                        }
+                        else
+                        {
+                            //Debug.Log("U " + dc.DataType + "/" + map.map[new ValString(dc.ColumnName)].ToString());
                         }
                     }
-                    i = datastores.Tables[table].Rows.Count;
+                    break;
                 }
             }
         }
@@ -124,14 +129,16 @@ namespace MiniScript.MSGS.Data
                     if (datastores.Tables[label].Columns[prop].DataType == typeof(string))
                     {
                         //var rows = datastores.Tables[label].Select(prop + "='" + value + "'");
-                        foreach (DataRow dr in datastores.Tables[label].Rows) {
+                        foreach (DataRow dr in datastores.Tables[label].Rows)
+                        {
                             if ((string)dr[prop] == value) { list.values.Add(dr.ToValMap()); }
                         }
                     }
                     else if (datastores.Tables[label].Columns[prop].DataType == typeof(double))
                     {
                         //var rows = datastores.Tables[label].Select(prop + "=" + value.ToString());
-                        foreach (DataRow dr in datastores.Tables[label].Rows) {
+                        foreach (DataRow dr in datastores.Tables[label].Rows)
+                        {
                             if ((double)dr[prop] == double.Parse(value)) { list.values.Add(dr.ToValMap()); }
                         }
                     }
@@ -640,6 +647,14 @@ namespace MiniScript.MSGS.Data
                 row = datastores.Tables[label].NewRow();
                 row["PrimaryKey"] = System.Guid.NewGuid().ToString();
                 lock (lock_datastores) { datastores.Tables[label].Rows.Add(row); }
+                foreach (DataColumn dc in datastores.Tables[label].Columns) {
+                    if (dc.ColumnName != "PrimaryKey") {
+                        if (dc.DefaultValue != null) {
+                            if (dc.DataType == typeof(double)) { row[dc.ColumnName] = dc.DefaultValue; }
+                            else if (dc.DataType == typeof(string)) { row[dc.ColumnName] = dc.DefaultValue; }
+                        }
+                    }
+                }
                 if (OnDataWarehouseStoreRowAdd != null) { OnDataWarehouseStoreRowAdd(label, row.ToValMap()); }
             }
 
@@ -753,6 +768,7 @@ namespace MiniScript.MSGS.Data
 
         public static void DataStoreAddAttribute(string label, string aname, Value v, out ValNumber tf)
         {
+            tf = ValNumber.zero;
             if (aname.ToLower() == "primarykey")
             {
                 MiniScriptSingleton.LogWarning("AttributeAdd on " + label + " failed since the Attribute name of 'PrimaryKey' is reserved and can not be used.");
@@ -772,7 +788,7 @@ namespace MiniScript.MSGS.Data
                         if (v != null)
                         {
                             MiniScriptSingleton.LogError("AttributeAdd on " + label + " failed since the argument type given was neither ValNumber nor ValString, but " +
-                                "was a " + v.GetType().Name);                            
+                                "was a " + v.GetType().Name);
                         }
                         else
                         {

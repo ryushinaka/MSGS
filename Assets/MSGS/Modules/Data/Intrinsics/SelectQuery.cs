@@ -12,7 +12,7 @@ namespace MiniScript.MSGS.Database.Intrinsics
         {
             var a = Intrinsic.Create("");
             #region
-            a.AddParam("typename", new ValString(string.Empty));
+            a.AddParam("typename", string.Empty);
             a.code = (context, partialResult) =>
             {
                 //validate the 'typename' argument, ensure that a declared Type actually exists that matches the name

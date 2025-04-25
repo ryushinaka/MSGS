@@ -10,6 +10,7 @@ using System;
 using System.Data;
 using MiniScript.MSGS.MUUI.Extensions;
 using UnityEditor;
+using MiniScript.MSGS.Unity;
 
 namespace MiniScript.MSGS.MUUI.TwoDimensional
 {
@@ -152,8 +153,8 @@ namespace MiniScript.MSGS.MUUI.TwoDimensional
             properties.map.Add(new ValString("Rect"), r);
 
             //r = button.ToValMap();
-            r.assignOverride += new ValMap.AssignOverrideFunc(OnButtonUpdate);
-            properties.map.Add(new ValString("Button"), r);
+            //r.assignOverride += new ValMap.AssignOverrideFunc(OnButtonUpdate);
+            //properties.map.Add(new ValString("Button"), r);
 
             return properties;
         }

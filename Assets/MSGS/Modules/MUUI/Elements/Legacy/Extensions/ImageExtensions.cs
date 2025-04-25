@@ -12,7 +12,7 @@ namespace MiniScript.MSGS.MUUI
 {
     public static class ImageExtensions
     {
-        public static ValMap ToValMap(this MiniScript.MSGS.MUUI.TwoDimensional.Image image)
+        public static ValMap ToValMap(this MiniScript.MSGS.MUUI.TwoDimensional.MUUIImage image)
         {
             ValMap map = new ValMap();
             map.map.Add(new ValString("enabled"), ValNumber.Truth(image.enabled));
@@ -69,7 +69,7 @@ namespace MiniScript.MSGS.MUUI
             return map;
         }
 
-        public static bool UpdateImage(this MiniScript.MSGS.MUUI.TwoDimensional.Image image, Value a, Value b)
+        public static bool UpdateImage(this MiniScript.MSGS.MUUI.TwoDimensional.MUUIImage image, Value a, Value b)
         {
             if (a is ValString)
             {
@@ -324,7 +324,7 @@ namespace MiniScript.MSGS.MUUI
             }
         }
 
-        public static void SetupImage(this MiniScript.MSGS.MUUI.TwoDimensional.Image image, ref DataRow row)
+        public static void SetupImage(this MiniScript.MSGS.MUUI.TwoDimensional.MUUIImage image, ref DataRow row)
         {
             image.image.color = new Color(
                 float.Parse(row["ColorR"].ToString()),

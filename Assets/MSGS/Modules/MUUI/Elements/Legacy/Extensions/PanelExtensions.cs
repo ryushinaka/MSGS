@@ -12,7 +12,7 @@ namespace MiniScript.MSGS.MUUI.Extensions
 {
     public static class PanelExtensions 
     {
-        public static ValMap ToValMap(this Panel panel)
+        public static ValMap ToValMap(this MUUIPanel panel)
         {
             ValMap rst = new ValMap();
             rst.map.Add(new ValString("enabled"), ValNumber.Truth(panel.enabled));
@@ -22,7 +22,7 @@ namespace MiniScript.MSGS.MUUI.Extensions
             return rst;
         }
 
-        public static bool UpdatePanel(this Panel panel, Value a, Value b)
+        public static bool UpdatePanel(this MUUIPanel panel, Value a, Value b)
         {
             if (a is ValString)
             {
@@ -92,7 +92,7 @@ namespace MiniScript.MSGS.MUUI.Extensions
             }
         }
 
-        public static void SetupPanel(this Panel panel, ref DataRow row)
+        public static void SetupPanel(this MUUIPanel panel, ref DataRow row)
         {
             panel.name = (string)row["name"];            
             panel.gameObject.SetActive((bool)row["enabled"]);

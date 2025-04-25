@@ -12,7 +12,7 @@ namespace MiniScript.MSGS.MUUI.Extensions
 {
     public static class TextExtensions
     {
-        public static ValMap ToValMap(this MiniScript.MSGS.MUUI.TwoDimensional.Text text)
+        public static ValMap ToValMap(this MiniScript.MSGS.MUUI.TwoDimensional.MUUIText text)
         {
             ValMap rst = new ValMap();
             rst.map.Add(new ValString("enabled"), ValNumber.Truth(text.enabled));
@@ -82,13 +82,15 @@ namespace MiniScript.MSGS.MUUI.Extensions
                         #region
                         if (b is ValString)
                         {
-                            text.SetText(((ValString)b).value);
-                            return true;
+                            //text.SetText(((ValString)b).value);
+                            text.SetText(b.ToString(),true);
+                            return false;
                         }
                         else if (b is ValNumber)
                         {
-                            text.SetText(((ValNumber)b).value.ToString());
-                            return true;
+                            //text.SetText(((ValNumber)b).value.ToString());
+                            text.SetText(b.ToString());
+                            return false;
                         }
                         else
                         {
@@ -462,7 +464,7 @@ namespace MiniScript.MSGS.MUUI.Extensions
             }
         }
 
-        public static void SetupText(this MiniScript.MSGS.MUUI.TwoDimensional.Text text, ref DataRow row)
+        public static void SetupText(this MiniScript.MSGS.MUUI.TwoDimensional.MUUIText text, ref DataRow row)
         {
             text.name = (string)row["Name"];
             text.mText.SetText((string)row["TextValue"]);

@@ -9,7 +9,7 @@ namespace MiniScript.MSGS.MUUI.TwoDimensional
     public static class ButtonAnimatedExtensions
     {
 
-        public static ValMap ToValMap(this ButtonAnimated button)
+        public static ValMap ToValMap(this MUUIButtonAnimated button)
         {
             ValMap rst = new ValMap();
             rst.map.Add(new ValString("InstanceID"), new ValNumber(button.gameObject.GetInstanceID()));
@@ -55,7 +55,7 @@ namespace MiniScript.MSGS.MUUI.TwoDimensional
             return rst;
         }
 
-        public static bool UpdateButton(this ButtonAnimated button, Value a, Value b)
+        public static bool UpdateButton(this MUUIButtonAnimated button, Value a, Value b)
         {
             if (a is ValString)
             {
@@ -671,7 +671,7 @@ namespace MiniScript.MSGS.MUUI.TwoDimensional
             }
         }
 
-        public static void SetupButton(this ButtonAnimated button, ref DataRow row, ref DataRow[] sprites)
+        public static void SetupButton(this MUUIButtonAnimated button, ref DataRow row, ref DataRow[] sprites)
         {
             button.ScriptOnEnter = (string)row["OnPointerEnterHandler"];
             button.ScriptOnExit = (string)row["OnPointerExitHandler"];

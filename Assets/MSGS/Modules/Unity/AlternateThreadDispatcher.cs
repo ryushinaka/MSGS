@@ -38,7 +38,35 @@ namespace MiniScript.MSGS.Unity
         
         void Start()
         {
-            
+            UnityCachedValues.Resolution = Screen.currentResolution;
+            UnityCachedValues.FullScreen = Screen.fullScreen;
+            UnityCachedValues.FullScreenMode = Screen.fullScreenMode;
+            UnityCachedValues.height = Screen.height;
+            UnityCachedValues.width = Screen.width;
+            UnityCachedValues.orientation = Screen.orientation;
+        }
+
+        private void Update()
+        {
+            //to avoid deadlocks at runtime, for values that are only updated at the start of Update(), we need to cache them here
+            //otherwise scripts will call the Instrinsics, which will queue waiting for an Update() to return a value that will never happen
+
+            //the UnityEngine.Time object is the first offender for this
+            UnityCachedValues.frameCount = UnityEngine.Time.frameCount;
+            UnityCachedValues.realTimeSinceStartup = UnityEngine.Time.realtimeSinceStartupAsDouble;
+            UnityCachedValues.timeScale = (double)UnityEngine.Time.timeScale;
+            UnityCachedValues.maximumDeltaTime = (double)UnityEngine.Time.maximumDeltaTime;
+            UnityCachedValues.fixedTime = UnityEngine.Time.fixedTimeAsDouble;
+            UnityCachedValues.deltaTime = (double)UnityEngine.Time.deltaTime;
+            UnityCachedValues.fixedDeltaTime = (double)UnityEngine.Time.fixedDeltaTime;
+            UnityCachedValues.unscaledDeltaTime = (double)UnityEngine.Time.unscaledDeltaTime;
+            UnityCachedValues.smoothDeltaTime = (double)UnityEngine.Time.smoothDeltaTime;
+            UnityCachedValues.timeSinceLevelLoad = UnityEngine.Time.timeSinceLevelLoadAsDouble;
+            UnityCachedValues.unscaledTime = UnityEngine.Time.unscaledTimeAsDouble;
+            UnityCachedValues.time = UnityEngine.Time.timeAsDouble;
+            UnityCachedValues.fixedUnscaledDeltaTime = (double)UnityEngine.Time.fixedUnscaledDeltaTime;
+            UnityCachedValues.maximumParticleDeltaTime = (double)UnityEngine.Time.maximumParticleDeltaTime;
+            UnityCachedValues.fixedUnscaledDeltaTime = (double)UnityEngine.Time.fixedUnscaledDeltaTime;
         }
 
         //we use FixedUpdate as the execution of this callback is more consistent/regular than just Update or LateUpdate

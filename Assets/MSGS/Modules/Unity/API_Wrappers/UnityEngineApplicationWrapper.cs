@@ -15,12 +15,21 @@ namespace MiniScript.MSGS.Unity
         {
             ValMap map = new ValMap();
 
+            #region runInBackground
             var a = Intrinsic.Create("");
             a.AddParam("value", ValNumber.Truth(false));
             a.code = (context, partialResult) =>
             {
                 if (debug) { Debug.Log("UnityEngine.Application.runInBackground"); }
-
+                if (MiniScriptSingleton.intrinsicDebugOptions.enabled)
+                {
+                    string s = string.Empty;
+                    IntrinsicMetadata v = IntrinsicsHelpMetadata.Get("runInBackground");
+                    if(!MiniScriptIntrinsicParameterChecker.TryValidate(ref context, ref v, ref s))
+                    {
+                        MiniScriptSingleton.LogInfo("Call to UnityEngine.Application.runInBackground failed validation: " + s);
+                    }
+                }
                 bool val = context.GetLocalBool("value");
 
                 var wi = AlternateThreadDispatcher.Get();
@@ -38,6 +47,27 @@ namespace MiniScript.MSGS.Unity
             };
             map.map.Add(new ValString("runInBackground"), a.GetFunc());
 
+            IntrinsicsHelpMetadata.Create("runInBackground",
+               "Set to True if you want the Unity Application to run continuously when the application does not have focus or is minimized, False if you do not want that.",
+               "UnityEngine.Application",
+               new List<IntrinsicParameter>()
+               {
+                   new IntrinsicParameter()
+                   {
+                       Name = "value",
+                       variableType = typeof(bool),
+                       Comment = "The boolean value to assign to the runInBackground property."
+                   },
+               },
+               new IntrinsicParameter()
+               {
+                   Name = "return",
+                   variableType = typeof(bool),
+                   Comment = "The current bool value of the runInBackground property"
+               });
+            #endregion
+
+            #region BackgroundLoadingPriority
             a = Intrinsic.Create("");
             a.AddParam("value", (int)UnityEngine.Application.backgroundLoadingPriority);
             a.code = (context, partialResult) =>
@@ -71,7 +101,9 @@ namespace MiniScript.MSGS.Unity
                 //return new Intrinsic.Result((int)UnityEngine.Application.backgroundLoadingPriority);
             };
             map.map.Add(new ValString("BackgroundLoadingPriority"), a.GetFunc());
+            #endregion
 
+            #region CaptureScreenshot
             a = Intrinsic.Create("");
             a.AddParam("filename", string.Empty);
             a.AddParam("superSize", 0);
@@ -81,8 +113,10 @@ namespace MiniScript.MSGS.Unity
                 wi.Module = UnityModuleName.Application;
                 wi.FunctionName = UnityEngineApplicationFunctions.CaptureScreenshot;
 
-                if (context.GetLocalString("filename") != string.Empty) {
-                    if (context.GetLocalInt("superSize") != 0) {
+                if (context.GetLocalString("filename") != string.Empty)
+                {
+                    if (context.GetLocalInt("superSize") != 0)
+                    {
                         wi.args = new object[2] { (object)context.GetLocalString("filename"), (object)context.GetLocalInt("superSize") };
                     }
                     else { wi.args = new object[1] { (object)context.GetLocalString("filename") }; }
@@ -95,7 +129,9 @@ namespace MiniScript.MSGS.Unity
                 return new Intrinsic.Result(null);
             };
             map.map.Add(new ValString("CaptureScreenshot"), a.GetFunc());
+            #endregion
 
+            #region Quit
             a = Intrinsic.Create("");
             a.code = (context, partialResult) =>
             {
@@ -106,11 +142,13 @@ namespace MiniScript.MSGS.Unity
                 AlternateThreadDispatcher.Enqueue(ref wi);
                 wi.eventSlim.Wait();
                 AlternateThreadDispatcher.Return(ref wi);
-                
+
                 return new Intrinsic.Result(null);
             };
             map.map.Add(new ValString("Quit"), a.GetFunc());
+            #endregion
 
+            #region SystemLanguage
             a = Intrinsic.Create("");
             a.code = (context, partialResult) =>
             {
@@ -125,7 +163,9 @@ namespace MiniScript.MSGS.Unity
                 return new Intrinsic.Result((string)wi.result);
             };
             map.map.Add(new ValString("SystemLanguage"), a.GetFunc());
+            #endregion
 
+            #region RuntimePlatform
             a = Intrinsic.Create("");
             a.code = (context, partialResult) =>
             {
@@ -140,7 +180,9 @@ namespace MiniScript.MSGS.Unity
                 return new Intrinsic.Result((string)wi.result);
             };
             map.map.Add(new ValString("RuntimePlatform"), a.GetFunc());
+            #endregion
 
+            #region AppVersion
             a = Intrinsic.Create("");
             a.code = (context, partialResult) =>
             {
@@ -155,7 +197,9 @@ namespace MiniScript.MSGS.Unity
                 return new Intrinsic.Result((string)wi.result);
             };
             map.map.Add(new ValString("AppVersion"), a.GetFunc());
+            #endregion
 
+            #region UnityVersion
             a = Intrinsic.Create("");
             a.code = (context, partialResult) =>
             {
@@ -170,7 +214,9 @@ namespace MiniScript.MSGS.Unity
                 return new Intrinsic.Result((string)wi.result);
             };
             map.map.Add(new ValString("UnityVersion"), a.GetFunc());
+            #endregion
 
+            #region temporaryCachePath
             a = Intrinsic.Create("");
             a.code = (context, partialResult) =>
             {
@@ -185,7 +231,9 @@ namespace MiniScript.MSGS.Unity
                 return new Intrinsic.Result((string)wi.result);
             };
             map.map.Add(new ValString("temporaryCachePath"), a.GetFunc());
+            #endregion
 
+            #region streamingAssetsPath
             a = Intrinsic.Create("");
             a.code = (context, partialResult) =>
             {
@@ -200,7 +248,9 @@ namespace MiniScript.MSGS.Unity
                 return new Intrinsic.Result((string)wi.result);
             };
             map.map.Add(new ValString("streamingAssetsPath"), a.GetFunc());
+            #endregion
 
+            #region persistentDataPath
             a = Intrinsic.Create("");
             a.code = (context, partialResult) =>
             {
@@ -215,7 +265,9 @@ namespace MiniScript.MSGS.Unity
                 return new Intrinsic.Result((string)wi.result);
             };
             map.map.Add(new ValString("persistentDataPath"), a.GetFunc());
+            #endregion
 
+            #region dataPath
             a = Intrinsic.Create("");
             a.code = (context, partialResult) =>
             {
@@ -230,6 +282,7 @@ namespace MiniScript.MSGS.Unity
                 return new Intrinsic.Result((string)wi.result);
             };
             map.map.Add(new ValString("dataPath"), a.GetFunc());
+            #endregion
 
             return map;
         }

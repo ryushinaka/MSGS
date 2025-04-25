@@ -8,6 +8,7 @@ namespace MiniScript.MSGS.Audio
 {
     public class MusicPlayer : MonoBehaviour
     {
+#pragma warning disable CS0414
         public Album tracks;
         public int trackindex;
         public GameObject player1, player2, currentTrack;
@@ -240,5 +241,7 @@ namespace MiniScript.MSGS.Audio
 
             Debug.Log("tracks loaded: " + tracks.Count);
         }
+
+#pragma warning restore cs0414
     }
 }

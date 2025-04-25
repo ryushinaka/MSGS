@@ -11,12 +11,12 @@ namespace MiniScript.MSGS.MUUI.Extensions
             return null;
         }
 
-        public static bool UpdateCanvas(this Canvas canv, Value a, Value b)
+        public static bool UpdateCanvas(this MUUICanvas canv, Value a, Value b)
         {
             return false;
         }
 
-        public static void SetupCanvas(this Canvas canv, ref DataRow row)
+        public static void SetupCanvas(this MUUICanvas canv, ref DataRow row)
         {
 
         }

@@ -7,6 +7,7 @@ using Sirenix.OdinInspector;
 #endif
 using MiniScript.MSGS.MUUI.Extensions;
 using MiniScript.MSGS.MUUI.TwoDimensional;
+using MiniScript.MSGS.Unity;
 
 namespace MiniScript.MSGS.MUUI
 {
@@ -38,33 +39,33 @@ namespace MiniScript.MSGS.MUUI
                     //clone the prefab
                     GameObject button = Instantiate(ButtonPrefab);
                     //pass the datarow to the script for initialization
-                    button.GetComponent<MiniScript.MSGS.MUUI.TwoDimensional.Button>().SetupButton(ref dr);
+                    button.GetComponent<MiniScript.MSGS.MUUI.TwoDimensional.MUUIButton>().SetupButton(ref dr);
                     //return the new button to the caller/handler
                     go = button;
                     break;
                 case UIElementType.Canvas:
                     GameObject canvas = Instantiate(CanvasPrefab);
-                    canvas.GetComponent<MiniScript.MSGS.MUUI.TwoDimensional.Canvas>().SetupCanvas(ref dr);
+                    canvas.GetComponent<MiniScript.MSGS.MUUI.TwoDimensional.MUUICanvas>().SetupCanvas(ref dr);
                     go = canvas;
                     break;
                 case UIElementType.DropDown:
                     GameObject drop = Instantiate(DropDownPrefab);
-                    drop.GetComponent<MiniScript.MSGS.MUUI.TwoDimensional.DropDown>().SetupDropDown(ref dr);
+                    drop.GetComponent<MiniScript.MSGS.MUUI.TwoDimensional.MUUIDropDown>().SetupDropDown(ref dr);
                     go = drop;
                     break;
                 case UIElementType.Image:
                     GameObject image = Instantiate(ImagePrefab);
-                    image.GetComponent<MiniScript.MSGS.MUUI.TwoDimensional.Image>().SetupImage(ref dr);
+                    image.GetComponent<MiniScript.MSGS.MUUI.TwoDimensional.MUUIImage>().SetupImage(ref dr);
                     go = image;
                     break;
                 case UIElementType.InputField:
                     GameObject input = Instantiate(InputFieldPrefab);
-                    input.GetComponent<MiniScript.MSGS.MUUI.TwoDimensional.InputField>().SetupInputField(ref dr);
+                    input.GetComponent<MiniScript.MSGS.MUUI.TwoDimensional.MUUIInputField>().SetupInputField(ref dr);
                     go = input;
                     break;
                 case UIElementType.Panel:
                     GameObject panel = Instantiate(PanelPrefab);
-                    panel.GetComponent<MiniScript.MSGS.MUUI.TwoDimensional.Panel>().SetupPanel(ref dr);
+                    panel.GetComponent<MiniScript.MSGS.MUUI.TwoDimensional.MUUIPanel>().SetupPanel(ref dr);
                     go = panel;
                     break;
                 //case MUUIElementType.RawImage:
@@ -78,22 +79,22 @@ namespace MiniScript.MSGS.MUUI
                     break;
                 case UIElementType.Scrollview:
                     GameObject scroll = Instantiate(ScrollViewPrefab);
-                    scroll.GetComponent<MiniScript.MSGS.MUUI.TwoDimensional.Scrollview>().SetupScrollview(ref dr);
+                    scroll.GetComponent<MiniScript.MSGS.MUUI.TwoDimensional.MUUIScrollview>().SetupScrollview(ref dr);
                     go = scroll;
                     break;
                 case UIElementType.Slider:
                     GameObject slider = Instantiate(SliderPrefab);
-                    slider.GetComponent<MiniScript.MSGS.MUUI.TwoDimensional.Slider>().SetupSlider(ref dr);
+                    slider.GetComponent<MiniScript.MSGS.MUUI.TwoDimensional.MUUISlider>().SetupSlider(ref dr);
                     go = slider;
                     break;
                 case UIElementType.Text:
                     GameObject text = Instantiate(TextPrefab);
-                    text.GetComponent<MiniScript.MSGS.MUUI.TwoDimensional.Text>().SetupText(ref dr);
+                    text.GetComponent<MiniScript.MSGS.MUUI.TwoDimensional.MUUIText>().SetupText(ref dr);
                     go = text;
                     break;
                 case UIElementType.Toggle:
                     GameObject toggle = Instantiate(TogglePrefab);
-                    toggle.GetComponent<MiniScript.MSGS.MUUI.TwoDimensional.Toggle>().SetupToggle(ref dr);
+                    toggle.GetComponent<MiniScript.MSGS.MUUI.TwoDimensional.MUUIToggle>().SetupToggle(ref dr);
                     go = toggle;
                     break;
                 default:
@@ -134,7 +135,7 @@ namespace MiniScript.MSGS.MUUI
                     {
                         go = Instantiate(MiniScriptSingleton.PrefabContainer.ButtonPrefab);
                         new WaitForEndOfFrame();
-                        go.GetComponent<MiniScript.MSGS.MUUI.TwoDimensional.Button>().SetupButton(ref rows[0]);
+                        go.GetComponent<MiniScript.MSGS.MUUI.TwoDimensional.MUUIButton>().SetupButton(ref rows[0]);
                     }
 
                     rows = set.Tables["ButtonAnimated"].Select("OwnerInstanceID=" + id);
@@ -143,14 +144,14 @@ namespace MiniScript.MSGS.MUUI
                         go = Instantiate(MiniScriptSingleton.PrefabContainer.ButtonAnimatedPrefab, Vector3.zero, Quaternion.identity, CanvasParent.transform);
                         new WaitForEndOfFrame();
                         frames = set.Tables["SpritesTable"].Select("OwnerInstanceID=" + id);
-                        go.GetComponent<MiniScript.MSGS.MUUI.TwoDimensional.ButtonAnimated>().SetupButton(ref rows[0], ref frames);
+                        go.GetComponent<MiniScript.MSGS.MUUI.TwoDimensional.MUUIButtonAnimated>().SetupButton(ref rows[0], ref frames);
                     }
 
                     rows = set.Tables["Image"].Select("OwnerInstanceID=" + id);
                     if (rows.Length > 0 && rows != null)
                     {
                         go = Instantiate(MiniScriptSingleton.PrefabContainer.ImagePrefab, Vector3.zero, Quaternion.identity, CanvasParent.transform);
-                        go.GetComponent<MiniScript.MSGS.MUUI.TwoDimensional.Image>().SetupImage(ref rows[0]);
+                        go.GetComponent<MiniScript.MSGS.MUUI.TwoDimensional.MUUIImage>().SetupImage(ref rows[0]);
                         go.name = (string)rows[0]["name"];
                     }
 
@@ -159,7 +160,7 @@ namespace MiniScript.MSGS.MUUI
                     {
                         go = Instantiate(MiniScriptSingleton.PrefabContainer.ImageAnimatedPrefab, Vector3.zero, Quaternion.identity, CanvasParent.transform);
                         frames = set.Tables["SpritesTable"].Select("OwnerInstanceID=" + id);
-                        go.GetComponent<MiniScript.MSGS.MUUI.TwoDimensional.ImageAnimated>().SetupImageAnimated(ref rows[0], ref frames);
+                        go.GetComponent<MiniScript.MSGS.MUUI.TwoDimensional.MUUIImageAnimated>().SetupImageAnimated(ref rows[0], ref frames);
                         go.name = (string)rows[0]["name"];
                     }
 
@@ -167,7 +168,7 @@ namespace MiniScript.MSGS.MUUI
                     if (rows.Length > 0 && rows != null)
                     {
                         go = Instantiate(MiniScriptSingleton.PrefabContainer.TextPrefab, Vector3.zero, Quaternion.identity, CanvasParent.transform);
-                        go.GetComponent<MiniScript.MSGS.MUUI.TwoDimensional.Text>().SetupText(ref rows[0]);
+                        go.GetComponent<MiniScript.MSGS.MUUI.TwoDimensional.MUUIText>().SetupText(ref rows[0]);
                         go.name = (string)rows[0]["name"];
                     }
 
@@ -175,7 +176,7 @@ namespace MiniScript.MSGS.MUUI
                     if (rows.Length > 0 && rows != null)
                     {
                         go = Instantiate(MiniScriptSingleton.PrefabContainer.PanelPrefab, Vector3.zero, Quaternion.identity, CanvasParent.transform);
-                        go.GetComponent<MiniScript.MSGS.MUUI.TwoDimensional.Panel>().SetupPanel(ref rows[0]);
+                        go.GetComponent<MiniScript.MSGS.MUUI.TwoDimensional.MUUIPanel>().SetupPanel(ref rows[0]);
                         go.name = (string)rows[0]["name"];
                     }
 
@@ -183,7 +184,7 @@ namespace MiniScript.MSGS.MUUI
                     if (rows.Length > 0 && rows != null)
                     {
                         go = Instantiate(MiniScriptSingleton.PrefabContainer.CanvasPrefab, Vector3.zero, Quaternion.identity, CanvasParent.transform);
-                        go.GetComponent<MiniScript.MSGS.MUUI.TwoDimensional.Canvas>().SetupCanvas(ref rows[0]);
+                        go.GetComponent<MiniScript.MSGS.MUUI.TwoDimensional.MUUICanvas>().SetupCanvas(ref rows[0]);
                         go.name = (string)rows[0]["name"];
                     }
 
@@ -191,7 +192,7 @@ namespace MiniScript.MSGS.MUUI
                     if (rows.Length > 0 && rows != null)
                     {
                         go = Instantiate(MiniScriptSingleton.PrefabContainer.DropDownPrefab, Vector3.zero, Quaternion.identity, CanvasParent.transform);
-                        go.GetComponent<MiniScript.MSGS.MUUI.TwoDimensional.DropDown>().SetupDropDown(ref rows[0]);
+                        go.GetComponent<MiniScript.MSGS.MUUI.TwoDimensional.MUUIDropDown>().SetupDropDown(ref rows[0]);
                         go.name = (string)rows[0]["name"];
                     }
 
@@ -199,7 +200,7 @@ namespace MiniScript.MSGS.MUUI
                     if (rows.Length > 0 && rows != null)
                     {
                         go = Instantiate(MiniScriptSingleton.PrefabContainer.InputFieldPrefab, Vector3.zero, Quaternion.identity, CanvasParent.transform);
-                        go.GetComponent<MiniScript.MSGS.MUUI.TwoDimensional.InputField>().SetupInputField(ref rows[0]);
+                        go.GetComponent<MiniScript.MSGS.MUUI.TwoDimensional.MUUIInputField>().SetupInputField(ref rows[0]);
                         go.name = (string)rows[0]["name"];
                     }
 
@@ -207,7 +208,7 @@ namespace MiniScript.MSGS.MUUI
                     if (rows.Length > 0 && rows != null)
                     {
                         go = Instantiate(MiniScriptSingleton.PrefabContainer.ScrollViewPrefab, Vector3.zero, Quaternion.identity, CanvasParent.transform);
-                        go.GetComponent<MiniScript.MSGS.MUUI.TwoDimensional.Scrollview>().SetupScrollview(ref rows[0]);
+                        go.GetComponent<MiniScript.MSGS.MUUI.TwoDimensional.MUUIScrollview>().SetupScrollview(ref rows[0]);
                         go.name = (string)rows[0]["name"];
                     }
 
@@ -215,7 +216,7 @@ namespace MiniScript.MSGS.MUUI
                     if (rows.Length > 0 && rows != null)
                     {
                         go = Instantiate(MiniScriptSingleton.PrefabContainer.SliderPrefab, Vector3.zero, Quaternion.identity, CanvasParent.transform);
-                        go.GetComponent<Slider>().SetupSlider(ref rows[0]);
+                        go.GetComponent<MUUISlider>().SetupSlider(ref rows[0]);
                         go.name = (string)rows[0]["name"];
                     }
 
@@ -223,7 +224,7 @@ namespace MiniScript.MSGS.MUUI
                     if (rows.Length > 0 && rows != null)
                     {
                         go = Instantiate(MiniScriptSingleton.PrefabContainer.TogglePrefab, Vector3.zero, Quaternion.identity, CanvasParent.transform);
-                        go.GetComponent<Toggle>().SetupToggle(ref rows[0]);
+                        go.GetComponent<MUUIToggle>().SetupToggle(ref rows[0]);
                         go.name = (string)rows[0]["name"];
                     }
 
@@ -328,7 +329,7 @@ namespace MiniScript.MSGS.MUUI
                     {
                         go = Instantiate(MiniScriptSingleton.PrefabContainer.ButtonPrefab);
                         new WaitForEndOfFrame();
-                        go.GetComponent<MiniScript.MSGS.MUUI.TwoDimensional.Button>().SetupButton(ref rows[0]);
+                        go.GetComponent<MiniScript.MSGS.MUUI.TwoDimensional.MUUIButton>().SetupButton(ref rows[0]);
                     }
 
                     rows = set.Tables["ButtonAnimated"].Select("OwnerInstanceID=" + id);
@@ -337,14 +338,14 @@ namespace MiniScript.MSGS.MUUI
                         go = Instantiate(MiniScriptSingleton.PrefabContainer.ButtonAnimatedPrefab, Vector3.zero, Quaternion.identity, CanvasParent.transform);
                         new WaitForEndOfFrame();
                         frames = set.Tables["SpritesTable"].Select("OwnerInstanceID=" + id);
-                        go.GetComponent<MiniScript.MSGS.MUUI.TwoDimensional.ButtonAnimated>().SetupButton(ref rows[0], ref frames);
+                        go.GetComponent<MiniScript.MSGS.MUUI.TwoDimensional.MUUIButtonAnimated>().SetupButton(ref rows[0], ref frames);
                     }
 
                     rows = set.Tables["Image"].Select("OwnerInstanceID=" + id);
                     if (rows.Length > 0 && rows != null)
                     {
                         go = Instantiate(MiniScriptSingleton.PrefabContainer.ImagePrefab, Vector3.zero, Quaternion.identity, CanvasParent.transform);
-                        go.GetComponent<MiniScript.MSGS.MUUI.TwoDimensional.Image>().SetupImage(ref rows[0]);
+                        go.GetComponent<MiniScript.MSGS.MUUI.TwoDimensional.MUUIImage>().SetupImage(ref rows[0]);
                         go.name = (string)rows[0]["name"];
                     }
 
@@ -353,7 +354,7 @@ namespace MiniScript.MSGS.MUUI
                     {
                         go = Instantiate(MiniScriptSingleton.PrefabContainer.ImageAnimatedPrefab, Vector3.zero, Quaternion.identity, CanvasParent.transform);
                         frames = set.Tables["SpritesTable"].Select("OwnerInstanceID=" + id);
-                        go.GetComponent<MiniScript.MSGS.MUUI.TwoDimensional.ImageAnimated>().SetupImageAnimated(ref rows[0], ref frames);
+                        go.GetComponent<MiniScript.MSGS.MUUI.TwoDimensional.MUUIImageAnimated>().SetupImageAnimated(ref rows[0], ref frames);
                         go.name = (string)rows[0]["name"];
                     }
 
@@ -361,7 +362,7 @@ namespace MiniScript.MSGS.MUUI
                     if (rows.Length > 0 && rows != null)
                     {
                         go = Instantiate(MiniScriptSingleton.PrefabContainer.TextPrefab, Vector3.zero, Quaternion.identity, CanvasParent.transform);
-                        go.GetComponent<MiniScript.MSGS.MUUI.TwoDimensional.Text>().SetupText(ref rows[0]);
+                        go.GetComponent<MiniScript.MSGS.MUUI.TwoDimensional.MUUIText>().SetupText(ref rows[0]);
                         go.name = (string)rows[0]["name"];
                     }
 
@@ -369,7 +370,7 @@ namespace MiniScript.MSGS.MUUI
                     if (rows.Length > 0 && rows != null)
                     {
                         go = Instantiate(MiniScriptSingleton.PrefabContainer.PanelPrefab, Vector3.zero, Quaternion.identity, CanvasParent.transform);
-                        go.GetComponent<MiniScript.MSGS.MUUI.TwoDimensional.Panel>().SetupPanel(ref rows[0]);
+                        go.GetComponent<MiniScript.MSGS.MUUI.TwoDimensional.MUUIPanel>().SetupPanel(ref rows[0]);
                         go.name = (string)rows[0]["name"];
                     }
 
@@ -377,7 +378,7 @@ namespace MiniScript.MSGS.MUUI
                     if (rows.Length > 0 && rows != null)
                     {
                         go = Instantiate(MiniScriptSingleton.PrefabContainer.CanvasPrefab, Vector3.zero, Quaternion.identity, CanvasParent.transform);
-                        go.GetComponent<MiniScript.MSGS.MUUI.TwoDimensional.Canvas>().SetupCanvas(ref rows[0]);
+                        go.GetComponent<MiniScript.MSGS.MUUI.TwoDimensional.MUUICanvas>().SetupCanvas(ref rows[0]);
                         go.name = (string)rows[0]["name"];
                     }
 
@@ -385,7 +386,7 @@ namespace MiniScript.MSGS.MUUI
                     if (rows.Length > 0 && rows != null)
                     {
                         go = Instantiate(MiniScriptSingleton.PrefabContainer.DropDownPrefab, Vector3.zero, Quaternion.identity, CanvasParent.transform);
-                        go.GetComponent<MiniScript.MSGS.MUUI.TwoDimensional.DropDown>().SetupDropDown(ref rows[0]);
+                        go.GetComponent<MiniScript.MSGS.MUUI.TwoDimensional.MUUIDropDown>().SetupDropDown(ref rows[0]);
                         go.name = (string)rows[0]["name"];
                     }
 
@@ -393,7 +394,7 @@ namespace MiniScript.MSGS.MUUI
                     if (rows.Length > 0 && rows != null)
                     {
                         go = Instantiate(MiniScriptSingleton.PrefabContainer.InputFieldPrefab, Vector3.zero, Quaternion.identity, CanvasParent.transform);
-                        go.GetComponent<MiniScript.MSGS.MUUI.TwoDimensional.InputField>().SetupInputField(ref rows[0]);
+                        go.GetComponent<MiniScript.MSGS.MUUI.TwoDimensional.MUUIInputField>().SetupInputField(ref rows[0]);
                         go.name = (string)rows[0]["name"];
                     }
 
@@ -401,7 +402,7 @@ namespace MiniScript.MSGS.MUUI
                     if (rows.Length > 0 && rows != null)
                     {
                         go = Instantiate(MiniScriptSingleton.PrefabContainer.ScrollViewPrefab, Vector3.zero, Quaternion.identity, CanvasParent.transform);
-                        go.GetComponent<MiniScript.MSGS.MUUI.TwoDimensional.Scrollview>().SetupScrollview(ref rows[0]);
+                        go.GetComponent<MiniScript.MSGS.MUUI.TwoDimensional.MUUIScrollview>().SetupScrollview(ref rows[0]);
                         go.name = (string)rows[0]["name"];
                     }
 
@@ -409,7 +410,7 @@ namespace MiniScript.MSGS.MUUI
                     if (rows.Length > 0 && rows != null)
                     {
                         go = Instantiate(MiniScriptSingleton.PrefabContainer.SliderPrefab, Vector3.zero, Quaternion.identity, CanvasParent.transform);
-                        go.GetComponent<MiniScript.MSGS.MUUI.TwoDimensional.Slider>().SetupSlider(ref rows[0]);
+                        go.GetComponent<MiniScript.MSGS.MUUI.TwoDimensional.MUUISlider>().SetupSlider(ref rows[0]);
                         go.name = (string)rows[0]["name"];
                     }
 
@@ -417,7 +418,7 @@ namespace MiniScript.MSGS.MUUI
                     if (rows.Length > 0 && rows != null)
                     {
                         go = Instantiate(MiniScriptSingleton.PrefabContainer.TogglePrefab, Vector3.zero, Quaternion.identity, CanvasParent.transform);
-                        go.GetComponent<MiniScript.MSGS.MUUI.TwoDimensional.Toggle>().SetupToggle(ref rows[0]);
+                        go.GetComponent<MiniScript.MSGS.MUUI.TwoDimensional.MUUIToggle>().SetupToggle(ref rows[0]);
                         go.name = (string)rows[0]["name"];
                     }
 

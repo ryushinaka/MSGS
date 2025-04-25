@@ -12,7 +12,7 @@ namespace MiniScript.MSGS.MUUI.Extensions
 {
     public static class ScrollviewExtensions
     {
-        public static ValMap ToValMap(this Scrollview view)
+        public static ValMap ToValMap(this MUUIScrollview view)
         {
             ValMap rst = new ValMap();
             rst.map.Add(new ValString("enabled"), ValNumber.Truth(view.enabled));
@@ -43,7 +43,7 @@ namespace MiniScript.MSGS.MUUI.Extensions
             return rst;
         }
 
-        public static bool UpdateScrollview(this Scrollview view, Value a, Value b)
+        public static bool UpdateScrollview(this MUUIScrollview view, Value a, Value b)
         {
             if (a is ValString)
             {
@@ -469,7 +469,7 @@ namespace MiniScript.MSGS.MUUI.Extensions
             }
         }
 
-        public static void SetupScrollview(this Scrollview view, ref DataRow row)
+        public static void SetupScrollview(this MUUIScrollview view, ref DataRow row)
         {
             view.ContentPrefab = (string)row["ContentPrefab"].ToString();
             view.ScrollRect.movementType = (ScrollRect.MovementType)System.Enum.Parse(typeof(ScrollRect.MovementType), (string)row["MovementType"]);
@@ -604,7 +604,7 @@ namespace MiniScript.MSGS.MUUI.Extensions
             else
             {
                 view.VerticalHandle.sprite =
-                    MiniScriptSingleton.PrefabContainer.ScrollViewPrefab.GetComponent<Scrollview>().VerticalHandle.sprite;
+                    MiniScriptSingleton.PrefabContainer.ScrollViewPrefab.GetComponent<MUUIScrollview>().VerticalHandle.sprite;
                 //foreach (Sprite sprite in Resources.FindObjectsOfTypeAll<Sprite>())
                 //{
                 //    if (sprite.name == "UISprite")
